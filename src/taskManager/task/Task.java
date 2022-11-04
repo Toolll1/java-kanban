@@ -1,4 +1,6 @@
-package task;
+package taskManager.task;
+
+import taskManager.task.status.Status;
 
 import java.util.Objects;
 
@@ -49,7 +51,7 @@ public class Task {
         this.status = status;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

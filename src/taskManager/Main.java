@@ -1,7 +1,9 @@
-import task.Epic;
-import task.Status;
-import task.Subtask;
-import task.Task;
+package taskManager;
+
+import taskManager.task.Epic;
+import taskManager.task.status.Status;
+import taskManager.task.Subtask;
+import taskManager.task.Task;
 
 public class Main {
 
@@ -22,11 +24,12 @@ public class Main {
         System.out.println();
         System.out.println(manager.getAllSubask());
 
-        manager.updateTask(1, new Task(Status.IN_PROGRESS, "Task1", "описание"));
-        manager.updateTask(2, new Task(Status.DONE, "Task2", "описание2"));
-        manager.updateSubtask(5, new Subtask(Status.DONE, "Subtask1", "описание", 3));
-        manager.updateSubtask(6, new Subtask(Status.IN_PROGRESS, "Subtask1.2", "описание2", 3));
-        manager.updateSubtask(7, new Subtask(Status.DONE, "Subtask2", "описание", 4));
+        manager.updateTask(new Task(Status.IN_PROGRESS, "Task1", "описание", 1));
+        manager.updateTask(new Task(Status.DONE, "Task2", "описание2", 2));
+     /*   manager.updateSubtask(5, new Subtask(Status.DONE, "Subtask1", "описание", 3));
+        manager.updateSubtask(6, new Subtask(Status.IN_PROGRESS, "Subtask1.2", "описание2", 3));*/
+        manager.deleteAllSubtasks();
+       // manager.updateSubtask(7, new Subtask(Status.DONE, "Subtask2", "описание", 4));
 
         System.out.println();
         System.out.println();

@@ -1,4 +1,6 @@
-package task;
+package taskManager.task;
+
+import taskManager.task.status.Status;
 
 import java.util.Objects;
 
