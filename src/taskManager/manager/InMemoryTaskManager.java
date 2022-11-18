@@ -120,8 +120,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(int subtaskId, Subtask subtask) {
         if (subtasks.containsKey(subtaskId)) {
-            subtasks.replace(subtask.getId(), subtask);
-            this.updateEpicStatus(epics.get(subtask.getEpicId()));
+            subtasks.replace(subtaskId, subtask);
+            Integer x = subtask.getEpicId();
+            this.updateEpicStatus(epics.get(x));
         } else {
             System.out.println("нет такого сабтаска");
         }
@@ -206,14 +207,8 @@ public class InMemoryTaskManager implements TaskManager {
 
         for (Subtask subtask : listOfSubtasks) {
             switch (subtask.getStatus()) {
-                case NEW:
-                    statusNew++;
-                    break;
-                case IN_PROGRESS:
-                    break;
-                case DONE:
-                    statusDone++;
-                    break;
+                case NEW -> statusNew++;
+                case DONE -> statusDone++;
             }
         }
 
