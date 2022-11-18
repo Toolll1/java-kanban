@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Main {
 
-        public static void main(String[] args) {
+    public static void main(String[] args) {
         TaskManager taskManager = Managers.getInMemoryTaskManager(Managers.getDefaultHistory());
 
         taskManager.createTask(new Task(Status.NEW, "Task1", "описание"));
@@ -20,7 +20,7 @@ public class Main {
         taskManager.createEpic(new Epic(Status.NEW, "Epic1", "описание"));
         taskManager.createEpic(new Epic(Status.NEW, "Epic2", "описание2"));
         taskManager.createSubtask(new Subtask(Status.NEW, "Subtask1", "описание", 3));
-        taskManager.createSubtask(new Subtask(Status.NEW, "Subtask1.2", "описание2", 3 ));
+        taskManager.createSubtask(new Subtask(Status.NEW, "Subtask1.2", "описание2", 3));
         taskManager.createSubtask(new Subtask(Status.NEW, "Subtask2", "описание", 4));
 
         System.out.println("Добавили всё");
@@ -81,5 +81,5 @@ public class Main {
         System.out.println();
         System.out.println("Последние 10 запросов в гет:");
         taskManager.printHistory();
-        }
+    }
 }

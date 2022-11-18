@@ -7,7 +7,7 @@ import taskManager.task.Task;
 
 import java.util.*;
 
-public class InMemoryTaskManager implements TaskManager{
+public class InMemoryTaskManager implements TaskManager {
 
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
@@ -25,10 +25,10 @@ public class InMemoryTaskManager implements TaskManager{
     }
 
     @Override
-    public void printHistory(){
+    public void printHistory() {
         List<Task> history = getHistory();
         int n = 1;
-        for (int i=(history.size()-1); i >= 0; i--){
+        for (int i = (history.size() - 1); i >= 0; i--) {
             System.out.println(n + " - " + history.get(i));
             n++;
         }
