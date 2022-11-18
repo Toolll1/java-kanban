@@ -1,6 +1,6 @@
 package taskManager.task;
 
-import taskManager.task.status.Status;
+import taskManager.status.Status;
 
 import java.util.Objects;
 
@@ -28,11 +28,6 @@ public class Subtask extends Task {
         if (!super.equals(o)) return false;
         Subtask subTask = (Subtask) o;
         return epicId == subTask.epicId;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), epicId);
     }
 
     @Override

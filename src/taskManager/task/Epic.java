@@ -1,6 +1,6 @@
 package taskManager.task;
 
-import taskManager.task.status.Status;
+import taskManager.status.Status;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -33,11 +33,6 @@ public class Epic extends Task {
         if (!super.equals(o)) return false;
         Epic epic = (Epic) o;
         return Objects.equals(subtaskIds, epic.subtaskIds);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), subtaskIds);
     }
 
     @Override

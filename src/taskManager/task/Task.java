@@ -1,6 +1,6 @@
 package taskManager.task;
 
-import taskManager.task.status.Status;
+import taskManager.status.Status;
 
 import java.util.Objects;
 
@@ -8,10 +8,6 @@ public class Task {
     protected String title;
     protected String description;
     protected Status status;
-    /* не понимаю, что нужно переделать, касательно этого комментария:
-    "у статуса 3 возможных значения лучше сделать Enum с этими значениями и хранить тут значение из него".
-    И так же идет ссылка на Enum
-     */
     protected Integer id;
 
     public Task(Status status, String title, String description) {
@@ -79,10 +75,4 @@ public class Task {
                 ", deskription='" + description + '\'' +
                 '}';
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, status, description);
-    }
-
 }
