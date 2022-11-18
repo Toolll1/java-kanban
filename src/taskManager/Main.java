@@ -75,11 +75,11 @@ public class Main {
         taskManager.getEpic(4);
         taskManager.getSubtask(7);
         taskManager.getSubtask(7);
-        List<Task> history = taskManager.getHistory();
+
 
         System.out.println();
         System.out.println();
-        System.out.println("Последние 10 запросов в гет:");
-        System.out.println(history);
+        System.out.println("Последние 10 запросов в гет (по убыванию):");
+        taskManager.printHistory();
         }
 }

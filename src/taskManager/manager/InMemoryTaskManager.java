@@ -25,6 +25,16 @@ public class InMemoryTaskManager implements TaskManager{
     }
 
     @Override
+    public void printHistory(){
+        List<Task> history = getHistory();
+        int n = 1;
+        for (int i=(history.size()-1); i >= 0; i--){
+            System.out.println(n + " - " + history.get(i));
+            n++;
+        }
+    }
+
+    @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
     }
