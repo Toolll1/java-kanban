@@ -1,4 +1,4 @@
-package taskManager.manager;
+package taskManager.manager.managerForHistory;
 
 import taskManager.task.Task;
 
@@ -13,10 +13,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void add(Task task) {
         if (history.size() >= MAX_SIZE) {
             history.remove(0);
-            history.add(task);
-        } else {
-            history.add(task);
         }
+        history.add(task);
     }
 
     @Override

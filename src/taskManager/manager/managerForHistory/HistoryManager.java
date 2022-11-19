@@ -1,4 +1,4 @@
-package taskManager.manager;
+package taskManager.manager.managerForHistory;
 
 import taskManager.task.Task;
 
