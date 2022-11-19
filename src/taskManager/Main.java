@@ -1,8 +1,8 @@
 package taskManager;
 
-import taskManager.manager.TaskManager;
+import taskManager.manager.managerForTask.TaskManager;
 import taskManager.manager.Managers;
-import taskManager.status.Status;
+import taskManager.task.Status;
 import taskManager.task.Epic;
 import taskManager.task.Subtask;
 import taskManager.task.Task;
@@ -13,7 +13,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = Managers.getInMemoryTaskManager(Managers.getDefaultHistory());
+        TaskManager taskManager = Managers.getDefaultTask();
 
         taskManager.createTask(new Task(Status.NEW, "Task1", "описание"));
         taskManager.createTask(new Task(Status.NEW, "Task2", "описание2"));
@@ -69,7 +69,7 @@ public class Main {
         taskManager.getEpic(4);
         taskManager.getSubtask(7);
         taskManager.getSubtask(7);
-        taskManager.getEpic(4);
+        taskManager.getEpic(5);
         taskManager.getSubtask(7);
         taskManager.getSubtask(7);
         taskManager.getEpic(4);
@@ -80,6 +80,11 @@ public class Main {
         System.out.println();
         System.out.println();
         System.out.println("Последние 10 запросов в гет:");
-        taskManager.printHistory();
+        List<Task> history = taskManager.getHistory();
+        int n = 1;
+        for (int i = (history.size() - 1); i >= 0; i--) {
+            System.out.println(n + " - " + history.get(i));
+            n++;
+        } //кажется, в InMemoryTaskManager его было бы логичнее реализовать, но, как знаете))
     }
 }
