@@ -1,9 +1,12 @@
-package taskManager.manager;
+package taskManager.manager.managerForTask;
 
+import taskManager.manager.managerForHistory.HistoryManager;
+import taskManager.manager.Managers;
 import taskManager.task.Epic;
-import taskManager.status.Status;
+import taskManager.task.Status;
 import taskManager.task.Subtask;
 import taskManager.task.Task;
+
 
 import java.util.*;
 
@@ -12,10 +15,10 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    private final HistoryManager historyManager;
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
 
-    public InMemoryTaskManager(HistoryManager historyManager) {
-        this.historyManager = historyManager;
+    public InMemoryTaskManager() {
+
     }
 
     private int i = 0;
@@ -24,7 +27,7 @@ public class InMemoryTaskManager implements TaskManager {
         return ++i;
     }
 
-    @Override
+    /*   @Override
     public void printHistory() {
         List<Task> history = getHistory();
         int n = 1;
@@ -32,7 +35,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println(n + " - " + history.get(i));
             n++;
         }
-    }
+    } */
 
     @Override
     public List<Task> getHistory() {
@@ -83,8 +86,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpic(int epicId) {
-        historyManager.add(epics.get(epicId));
-        return epics.get(epicId);
+        Epic epic = epics.get(epicId);
+        if (epic != null) {
+            historyManager.add(epics.get(epicId));
+            return epics.get(epicId);
+        } else {
+            System.out.println("нет такого эпика");
+            return null;
+        }
     }
 
     @Override
