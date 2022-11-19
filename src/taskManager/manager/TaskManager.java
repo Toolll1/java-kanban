@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface TaskManager {
 
-    public void printHistory();
+  //  public void printHistory();
 
     List<Task> getHistory();
 
@@ -21,7 +21,6 @@ public interface TaskManager {
     public Task getTask(int taskId);
 
     public void deleteTask(int taskId);
-
 
     public void createEpic(Epic epic);
 
