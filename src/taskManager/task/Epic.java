@@ -1,7 +1,5 @@
 package taskManager.task;
 
-import taskManager.status.Status;
-
 import java.util.ArrayList;
 import java.util.Objects;
 
