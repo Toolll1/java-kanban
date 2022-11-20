@@ -70,6 +70,8 @@ public class Main {
         taskManager.getSubtask(7);
         taskManager.getSubtask(7);
         taskManager.getEpic(5);
+        taskManager.getTask(12);
+        taskManager.getSubtask(17);
         taskManager.getSubtask(7);
         taskManager.getSubtask(7);
         taskManager.getEpic(4);
@@ -85,6 +87,6 @@ public class Main {
         for (int i = (history.size() - 1); i >= 0; i--) {
             System.out.println(n + " - " + history.get(i));
             n++;
-        } //кажется, в InMemoryTaskManager его было бы логичнее реализовать, но, как знаете))
+        }
     }
 }

@@ -27,16 +27,6 @@ public class InMemoryTaskManager implements TaskManager {
         return ++i;
     }
 
-    /*   @Override
-    public void printHistory() {
-        List<Task> history = getHistory();
-        int n = 1;
-        for (int i = (history.size() - 1); i >= 0; i--) {
-            System.out.println(n + " - " + history.get(i));
-            n++;
-        }
-    } */
-
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
@@ -59,8 +49,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(int taskId) {
-        historyManager.add(tasks.get(taskId));
-        return tasks.get(taskId);
+        Task task = tasks.get(taskId);
+        if (task != null) {
+            historyManager.add(tasks.get(taskId));
+            return epics.get(taskId);
+        } else {
+            System.out.println("нет такого таска");
+            return null;
+        }
     }
 
     @Override
@@ -139,8 +135,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask getSubtask(int subtaskId) {
-        historyManager.add(subtasks.get(subtaskId));
-        return subtasks.get(subtaskId);
+        Subtask subtask = subtasks.get(subtaskId);
+        if (subtask != null) {
+            historyManager.add(subtasks.get(subtaskId));
+            return subtasks.get(subtaskId);
+        } else {
+            System.out.println("нет такого субтаска");
+            return null;
+        }
     }
 
     @Override

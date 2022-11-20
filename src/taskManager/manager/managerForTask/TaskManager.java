@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface TaskManager {
 
-  //  public void printHistory();
-
     List<Task> getHistory();
 
     public void createTask(Task task);
