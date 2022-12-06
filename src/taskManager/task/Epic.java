@@ -35,7 +35,8 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{" +
+        Class<? extends Epic> c = getClass();
+        return c.getSimpleName() + "{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", status=" + status +

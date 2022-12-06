@@ -66,7 +66,8 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        Class<? extends Task> c = getClass();
+        return c.getSimpleName() + "{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", status=" + status +
