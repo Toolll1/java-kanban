@@ -1,5 +1,7 @@
 package taskManager.task;
 
+import java.util.Objects;
+
 public class Subtask extends Task {
 
     protected Integer epicId;
@@ -22,8 +24,13 @@ public class Subtask extends Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        Subtask subTask = (Subtask) o;
-        return epicId == subTask.epicId;
+        Subtask subtask = (Subtask) o;
+        return Objects.equals(epicId, subtask.epicId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), epicId);
     }
 
     @Override

@@ -67,7 +67,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-
     @Override
     public void createEpic(Epic epic) {
         epic.setId(newId());
@@ -210,7 +209,6 @@ public class InMemoryTaskManager implements TaskManager {
         epics.clear();
         subtasks.clear();
     }
-
 
     private void updateEpicStatus(Epic epic) {
         ArrayList<Subtask> listOfSubtasks = new ArrayList<>();

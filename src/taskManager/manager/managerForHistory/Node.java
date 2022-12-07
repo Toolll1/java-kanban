@@ -11,6 +11,10 @@ public class Node<E> {
         this.next = next;
     }
 
+    public Node(E data) {
+        this(null,data,null);
+    }
+
     public E getData() {
         return data;
     }
