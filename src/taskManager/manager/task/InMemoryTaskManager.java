@@ -1,6 +1,6 @@
-package taskManager.manager.managerForTask;
+package taskManager.manager.task;
 
-import taskManager.manager.managerForHistory.HistoryManager;
+import taskManager.manager.history.HistoryManager;
 import taskManager.manager.Managers;
 import taskManager.task.Epic;
 import taskManager.task.Status;

@@ -1,4 +1,4 @@
-package taskManager.manager.managerForHistory;
+package taskManager.manager.history;
 
 public class Node<E> {
     private E data;

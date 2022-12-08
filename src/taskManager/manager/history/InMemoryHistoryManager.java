@@ -1,10 +1,11 @@
-package taskManager.manager.managerForHistory;
+package taskManager.manager.history;
 
 import taskManager.task.Task;
 
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
+
     private final CustomLinkedList<Task> customHistoryList = new CustomLinkedList<>();
 
     @Override
@@ -13,12 +14,12 @@ public class InMemoryHistoryManager implements HistoryManager {
             return;
         }
         remove(task.getId());
-        customHistoryList.linkLast(task, customHistoryList, task);
+        customHistoryList.linkLast(task);
     }
 
     @Override
     public void remove(int id) {
-        customHistoryList.removeNode(id, customHistoryList);
+        customHistoryList.removeNode(id);
     }
 
     @Override
@@ -26,24 +27,22 @@ public class InMemoryHistoryManager implements HistoryManager {
         return customHistoryList.getTasks();
     }
 
-    public static class CustomLinkedList<T> {
+    public static class CustomLinkedList<T extends Task> {
         private Node<T> head;
         private Node<T> tail;
-        private static final Map<Integer, Node<Task>> tasksHistory = new HashMap<>();
+        private final Map<Integer, Node<Task>> tasksHistory = new HashMap<>();
 
-        public void linkLast(T element, CustomLinkedList<Task> customHistoryList, Task task) {
-            if (head == null) {
-                head = new Node<T>(element);
-                tasksHistory.put(task.getId(), (Node<Task>) head);
-                return;
-            }
-            Node<T> currentNode = head;
-            while (currentNode.getNext() != null) {
-                currentNode = currentNode.getNext();
-            }
-            currentNode.setNext(new Node<T>(currentNode, element, null));
+        public void linkLast(T element) {
 
-            tasksHistory.put(task.getId(), (Node<Task>) currentNode);
+            final Node <T> oldTail = tail;
+            final Node <T> currentNode = new Node<T>(oldTail, element, null);
+            tail = currentNode;
+            if (oldTail == null) {
+                head = currentNode;
+            } else {
+                oldTail.setNext(currentNode);
+            }
+            tasksHistory.put(element.getId(), (Node<Task>) currentNode);
         }
 
         public List<T> getTasks() {
@@ -57,32 +56,27 @@ public class InMemoryHistoryManager implements HistoryManager {
             return tasksList;
         }
 
-        public void removeNode(int id, CustomLinkedList<T> customHistoryList) {
-
+        public void removeNode(int id) {
             if (tasksHistory.containsKey(id)) {
-                Node<T> node = (Node<T>) tasksHistory.get(id);
+                Node<Task> node = tasksHistory.get(id);
 
                 if (node == null) {
                     return;
                 }
 
-                final Node<T> prev = node.getPrev();
-                final Node<T> next = node.getNext();
+                final Node<Task> prev = node.getPrev();
+                final Node<Task> next = node.getNext();
 
                 if (prev == null) {
-                    head = next;
+                    head = (Node<T>) next;
                 } else {
                     prev.setNext(next);
-                    node.setPrev(null);
                 }
                 if (next == null) {
-                    tail = prev;
+                    tail = (Node<T>) prev;
                 } else {
                     next.setPrev(prev);
-                    node.setNext(null);
                 }
-                node.setData(null);
-
                 tasksHistory.remove(id);
             }
         }

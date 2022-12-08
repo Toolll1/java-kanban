@@ -1,6 +1,6 @@
 package taskManager;
 
-import taskManager.manager.managerForTask.TaskManager;
+import taskManager.manager.task.TaskManager;
 import taskManager.manager.Managers;
 import taskManager.task.Status;
 import taskManager.task.Epic;

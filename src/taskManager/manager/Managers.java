@@ -1,9 +1,9 @@
 package taskManager.manager;
 
-import taskManager.manager.managerForHistory.HistoryManager;
-import taskManager.manager.managerForHistory.InMemoryHistoryManager;
-import taskManager.manager.managerForTask.InMemoryTaskManager;
-import taskManager.manager.managerForTask.TaskManager;
+import taskManager.manager.history.HistoryManager;
+import taskManager.manager.history.InMemoryHistoryManager;
+import taskManager.manager.task.InMemoryTaskManager;
+import taskManager.manager.task.TaskManager;
 
 public class Managers {
     public static HistoryManager getDefaultHistory() {
