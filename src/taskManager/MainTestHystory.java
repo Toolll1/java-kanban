@@ -9,7 +9,7 @@ import taskManager.task.Task;
 
 import java.util.List;
 
-public class Main {
+public class MainTestHystory {
 
     public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefaultTask();
@@ -55,8 +55,8 @@ public class Main {
         List<Task> history = taskManager.getHistory();
         int n = 1;
         for (int i = (history.size() - 1); i >= 0; i--) {
-                System.out.println(n + " - " + history.get(i));
-                n++;
+            System.out.println(n + " - " + history.get(i));
+            n++;
         }
     }
 }

@@ -12,9 +12,26 @@ import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
+    public HashMap<Integer, Task> getTasks() {
+        return tasks;
+    }
+
+    public HashMap<Integer, Epic> getEpics() {
+        return epics;
+    }
+
+    public HashMap<Integer, Subtask> getSubtasks() {
+        return subtasks;
+    }
+
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+
+    public HistoryManager getHistoryManager() {
+        return historyManager;
+    }
+
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     public InMemoryTaskManager() {
@@ -52,7 +69,7 @@ public class InMemoryTaskManager implements TaskManager {
         Task task = tasks.get(taskId);
         if (task != null) {
             historyManager.add(tasks.get(taskId));
-            return epics.get(taskId);
+            return tasks.get(taskId);
         } else {
             System.out.println("нет такого таска");
             return null;
