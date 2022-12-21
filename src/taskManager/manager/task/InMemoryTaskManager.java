@@ -12,35 +12,15 @@ import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    public HashMap<Integer, Task> getTasks() {
-        return tasks;
-    }
-
-    public HashMap<Integer, Epic> getEpics() {
-        return epics;
-    }
-
-    public HashMap<Integer, Subtask> getSubtasks() {
-        return subtasks;
-    }
-
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
-
-    public HistoryManager getHistoryManager() {
-        return historyManager;
-    }
+    protected HashMap<Integer, Task> tasks = new HashMap<>();
+    protected HashMap<Integer, Epic> epics = new HashMap<>();
+    protected HashMap<Integer, Subtask> subtasks = new HashMap<>();
 
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
-    public InMemoryTaskManager() {
-
-    }
-
     private int i = 0;
 
-    private int newId() {
+    protected int newId() {
         return ++i;
     }
 

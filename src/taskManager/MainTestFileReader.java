@@ -11,13 +11,10 @@ import java.util.List;
 public class MainTestFileReader {
 
     public static void main(String[] args) {
-        FileBackedTasksManager taskManager = Managers.getDefaultFileBackedTasksManager();
-        File file = Path.of("file.csv").toFile();
+        File file = Path.of("src","taskManager","task","file.csv").toFile();
+        FileBackedTasksManager taskManager = Managers.getDefaultFileBackedTasksManager(file.toString());
 
         taskManager.loadFromFile(file);
-
-        taskManager.deleteTask(1);
-        taskManager.deleteEpic(3);
 
         System.out.println();
         System.out.println();

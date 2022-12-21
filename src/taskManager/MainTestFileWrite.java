@@ -6,12 +6,17 @@ import taskManager.task.Epic;
 import taskManager.task.Status;
 import taskManager.task.Subtask;
 import taskManager.task.Task;
+
+import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 public class MainTestFileWrite {
 
     public static void main(String[] args) {
-        FileBackedTasksManager taskManager = Managers.getDefaultFileBackedTasksManager();
+
+        File file = Path.of("src","taskManager","task","file.csv").toFile();
+        FileBackedTasksManager taskManager = Managers.getDefaultFileBackedTasksManager(file.toString());
 
         taskManager.createTask(new Task(Status.NEW, "Task1", "описание1"));
         taskManager.createTask(new Task(Status.NEW, "Task2", "описание2"));
@@ -45,8 +50,9 @@ public class MainTestFileWrite {
         taskManager.getTask(2);
         taskManager.getSubtask(4);
 
-        taskManager.deleteTask(1);
-        taskManager.deleteEpic(3);
+        taskManager.deleteTask(2);
+        taskManager.updateTask(new Task(Status.IN_PROGRESS, "Task1", "описание", 1));
+        taskManager.getTask(1);
 
         System.out.println();
         System.out.println();
