@@ -11,7 +11,7 @@ import java.util.List;
 public class MainTestFileReader {
 
     public static void main(String[] args) {
-        File file = Path.of("src","taskManager","task","file.csv").toFile();
+        File file = Path.of("src", "taskManager", "task", "file.csv").toFile();
         FileBackedTasksManager taskManager = Managers.getDefaultFileBackedTasksManager(file.toString());
 
         taskManager.loadFromFile(file);

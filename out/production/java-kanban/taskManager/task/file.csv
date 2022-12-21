@@ -1,9 +1,0 @@
-id, тип, название, статус, описание, EpicId
-1,TASK,Task1,IN_PROGRESS,описание
-3,EPIC,Epic1,NEW,описание1
-7,EPIC,Epic2,NEW,описание2
-4,SUBTASK,Subtask1.1,NEW,описание1,3
-5,SUBTASK,Subtask1.2,NEW,описание2,3
-6,SUBTASK,Subtask1.3,NEW,описание3,3
-
-6,3,7,5,4,1,

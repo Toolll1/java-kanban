@@ -70,20 +70,21 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
 
         for (int i = 1; !list.get(i).isEmpty(); i++) {
-            String[] separator = list.get(i).split(",");
-            int id = Integer.parseInt(separator[0].trim());
-            String title = separator[2];
-            String description = separator[4];
-            Status status = Status.valueOf(separator[3]);
 
-            if (Objects.equals(separator[1], "TASK")) {
+            String[] arrayOfStrings = list.get(i).split(",");
+            int id = Integer.parseInt(arrayOfStrings[0].trim());
+            String title = arrayOfStrings[2];
+            String description = arrayOfStrings[4];
+            Status status = Status.valueOf(arrayOfStrings[3]);
+
+            if (Objects.equals(arrayOfStrings[1], "TASK")) {
                 tasks.put(id, (new Task(status, title, description, id)));
                 newId();
-            } else if (Objects.equals(separator[1], "EPIC")) {
+            } else if (Objects.equals(arrayOfStrings[1], "EPIC")) {
                 epics.put(id, (new Epic(status, title, description, id)));
                 newId();
-            } else if (Objects.equals(separator[1], "SUBTASK")) {
-                int epicId = Integer.parseInt(separator[5]);
+            } else if (Objects.equals(arrayOfStrings[1], "SUBTASK")) {
+                int epicId = Integer.parseInt(arrayOfStrings[5]);
                 subtasks.put(id, (new Subtask(status, title, description, id, epicId)));
                 newId();
             }
@@ -101,7 +102,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 getTask(id);
             }
         }
-
     }
 
     @Override
@@ -193,21 +193,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public Collection<Task> getAllTask() {
-        return super.getAllTask();
-    }
-
-    @Override
-    public Collection<Subtask> getAllSubask() {
-        return super.getAllSubask();
-    }
-
-    @Override
-    public Collection<Epic> getAllEpic() {
-        return super.getAllEpic();
-    }
-
-    @Override
     public void deleteAllTask() {
         super.deleteAllTask();
         save();
@@ -223,16 +208,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void deleteAllEpics() {
         super.deleteAllEpics();
         save();
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
     }
 
 }

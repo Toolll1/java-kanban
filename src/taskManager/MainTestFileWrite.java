@@ -15,7 +15,7 @@ public class MainTestFileWrite {
 
     public static void main(String[] args) {
 
-        File file = Path.of("src","taskManager","task","file.csv").toFile();
+        File file = Path.of("src", "taskManager", "task", "file.csv").toFile();
         FileBackedTasksManager taskManager = Managers.getDefaultFileBackedTasksManager(file.toString());
 
         taskManager.createTask(new Task(Status.NEW, "Task1", "описание1"));
