@@ -11,6 +11,21 @@ import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 
+/*
+* "3) я бы в классе managers методу для получения FileBackedTasksManager добавил параметр имя файла,
+* чтобы можно было задать с каким фалом работать"
+*
+* - добавить-добавил, но не понимаю, как это использовать..
+*
+*
+* "4) конструктор FileBackedTasksManager лучше сделать приватным, а обьект класса создавать статическим методом,
+* который будет возвращать FileBackedTasksManager а внутри считывать данные из файла, и заполнять себя"
+*
+*  - а тут совсем не понял.. И просто убрал конструктор)))
+*
+* */
+
+
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private void save() {
