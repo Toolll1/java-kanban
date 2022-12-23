@@ -10,12 +10,19 @@ import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 
+/*
+* с учетом того, что нужно оставить только один конструктор, это решение - лучшее из того, что пришло вне в голову))
+* loadFromFile(file) запускается только в том случае, если мы хотим считать файл
+* */
+
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
     CsvConverter csvConverter = new CsvConverter();
 
     private FileBackedTasksManager(File file, boolean CheckReader) {
-        if (CheckReader) loadFromFile(file);
+        if (CheckReader) {
+            loadFromFile(file);
+        }
     }
 
     public static FileBackedTasksManager getTaskManagerForFile(File file, boolean CheckReader) {
