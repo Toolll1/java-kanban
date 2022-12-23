@@ -3,7 +3,6 @@ package taskManager.manager.file;
 import taskManager.exceptions.ManagerSaveException;
 import taskManager.manager.task.InMemoryTaskManager;
 import taskManager.task.Epic;
-import taskManager.task.Status;
 import taskManager.task.Subtask;
 import taskManager.task.Task;
 
@@ -11,22 +10,24 @@ import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 
-/*
-* "3) я бы в классе managers методу для получения FileBackedTasksManager добавил параметр имя файла,
-* чтобы можно было задать с каким фалом работать"
-*
-* - добавить-добавил, но не понимаю, как это использовать..
-*
-*
-* "4) конструктор FileBackedTasksManager лучше сделать приватным, а обьект класса создавать статическим методом,
-* который будет возвращать FileBackedTasksManager а внутри считывать данные из файла, и заполнять себя"
-*
-*  - а тут совсем не понял.. И просто убрал конструктор)))
-*
-* */
-
-
 public class FileBackedTasksManager extends InMemoryTaskManager {
+
+    CsvConverter csvConverter = new CsvConverter();
+
+    private FileBackedTasksManager() {
+    }
+
+    private FileBackedTasksManager(File file) {
+    loadFromFile(file);
+    }
+
+     public static FileBackedTasksManager getTaskManagerForFile(File file) {
+        return new FileBackedTasksManager(file);
+    }
+
+    public static FileBackedTasksManager getTaskManagerForFile() {
+        return new FileBackedTasksManager();
+    }
 
     private void save() {
         String path = String.valueOf(Path.of("src", "taskManager", "task", "file.csv"));
@@ -34,12 +35,26 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(path))) {
             writer.write("id, тип, название, статус, описание, EpicId");
             writer.newLine();
-            writer.write(CsvConverter());
-            writer.newLine();
+
+            for (Map.Entry<Integer, Task> entry : tasks.entrySet()) {
+                Task task = tasks.get(entry.getKey());
+                writer.write(csvConverter.taskToString(task));
+            }
+
+            for (Map.Entry<Integer, Epic> entry : epics.entrySet()) {
+                Epic epic = epics.get(entry.getKey());
+                writer.write(csvConverter.taskToString(epic));
+            }
+            for (Map.Entry<Integer, Subtask> entry : subtasks.entrySet()) {
+                Subtask subtask = subtasks.get(entry.getKey());
+                writer.write(csvConverter.taskToString(subtask));
+            }
 
             List<Task> history = getHistory();
+            writer.newLine();
+
             for (Task task : history) {
-                writer.write(task.getId() + ",");
+                writer.write(csvConverter.historyToString(task));
             }
 
         } catch (IOException exception) {
@@ -48,28 +63,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    private String CsvConverter() {
-        StringBuilder sb = new StringBuilder();
-
-        for (Map.Entry<Integer, Task> task : tasks.entrySet()) {
-            Task x = tasks.get(task.getKey());
-            sb.append(String.format("%s,%s,%s,%s,%s\n", x.getId(), TaskType.TASK, x.getTitle(),
-                    x.getStatus(), x.getDescription()));
-        }
-        for (Map.Entry<Integer, Epic> epic : epics.entrySet()) {
-            Epic x = epics.get(epic.getKey());
-            sb.append(String.format("%s,%s,%s,%s,%s\n", x.getId(), TaskType.EPIC, x.getTitle(),
-                    x.getStatus(), x.getDescription()));
-        }
-        for (Map.Entry<Integer, Subtask> subtask : subtasks.entrySet()) {
-            Subtask x = subtasks.get(subtask.getKey());
-            sb.append(String.format("%s,%s,%s,%s,%s,%s\n", x.getId(), TaskType.SUBTASK, x.getTitle(),
-                    x.getStatus(), x.getDescription(), x.getEpicId()));
-        }
-        return sb.toString();
-    }
-
-    public void loadFromFile(File file) {
+    private void loadFromFile(File file) {
 
         List<String> list = new ArrayList<>();
 
@@ -83,24 +77,19 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     "вы смогли увидеть моё собственное расчудесное непроверяемое исключение");
         }
 
-
-        for (int i = 1; !list.get(i).isEmpty(); i++) {
+        for (int i = 1; i < list.size() - 2; i++) {
 
             String[] arrayOfStrings = list.get(i).split(",");
             int id = Integer.parseInt(arrayOfStrings[0].trim());
-            String title = arrayOfStrings[2];
-            String description = arrayOfStrings[4];
-            Status status = Status.valueOf(arrayOfStrings[3]);
 
             if (Objects.equals(arrayOfStrings[1], "TASK")) {
-                tasks.put(id, (new Task(status, title, description, id)));
+                tasks.put(id, (CsvConverter.stringToTask(arrayOfStrings)));
                 newId();
             } else if (Objects.equals(arrayOfStrings[1], "EPIC")) {
-                epics.put(id, (new Epic(status, title, description, id)));
+                epics.put(id, CsvConverter.stringToEpic(arrayOfStrings));
                 newId();
             } else if (Objects.equals(arrayOfStrings[1], "SUBTASK")) {
-                int epicId = Integer.parseInt(arrayOfStrings[5]);
-                subtasks.put(id, (new Subtask(status, title, description, id, epicId)));
+                subtasks.put(id, CsvConverter.stringToSubtask(arrayOfStrings));
                 newId();
             }
         }
@@ -109,11 +98,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         for (String s : taskId) {
             int id = Integer.parseInt(s.trim());
 
-            if (subtasks.get(id) != null) {
+            if (subtasks.containsKey(id)) {
                 getSubtask(id);
-            } else if (epics.get(id) != null) {
+            } else if (epics.containsKey(id)) {
                 super.getEpic(id);
-            } else if (tasks.get(id) != null) {
+            } else if (tasks.containsKey(id)) {
                 getTask(id);
             }
         }

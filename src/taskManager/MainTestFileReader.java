@@ -12,9 +12,7 @@ public class MainTestFileReader {
 
     public static void main(String[] args) {
         File file = Path.of("src", "taskManager", "task", "file.csv").toFile();
-        FileBackedTasksManager taskManager = Managers.getDefaultFileBackedTasksManager(file.toString());
-
-        taskManager.loadFromFile(file);
+        FileBackedTasksManager taskManager = Managers.getDefaultFileBackedTasksManager(file);
 
         System.out.println();
         System.out.println();
