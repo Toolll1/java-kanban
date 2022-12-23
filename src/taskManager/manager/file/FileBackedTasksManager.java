@@ -14,19 +14,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     CsvConverter csvConverter = new CsvConverter();
 
-    private FileBackedTasksManager() {
+    private FileBackedTasksManager(File file, boolean CheckReader) {
+        if (CheckReader) loadFromFile(file);
     }
 
-    private FileBackedTasksManager(File file) {
-    loadFromFile(file);
-    }
-
-     public static FileBackedTasksManager getTaskManagerForFile(File file) {
-        return new FileBackedTasksManager(file);
-    }
-
-    public static FileBackedTasksManager getTaskManagerForFile() {
-        return new FileBackedTasksManager();
+    public static FileBackedTasksManager getTaskManagerForFile(File file, boolean CheckReader) {
+        return new FileBackedTasksManager(file, CheckReader);
     }
 
     private void save() {

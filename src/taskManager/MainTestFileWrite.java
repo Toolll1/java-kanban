@@ -13,9 +13,10 @@ import java.util.List;
 
 public class MainTestFileWrite {
 
-    public static void main(String[] args) {
+        public static void main(String[] args) {
 
-        FileBackedTasksManager taskManager = Managers.getDefaultFileBackedTasksManager();
+        File file = Path.of("src", "taskManager", "task", "file.csv").toFile();
+        FileBackedTasksManager taskManager = Managers.getDefaultFileBackedTasksManager(file, false);
 
         taskManager.createTask(new Task(Status.NEW, "Task1", "описание1"));
         taskManager.createTask(new Task(Status.NEW, "Task2", "описание2"));
