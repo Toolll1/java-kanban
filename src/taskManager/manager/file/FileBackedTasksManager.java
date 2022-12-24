@@ -7,55 +7,37 @@ import taskManager.task.Subtask;
 import taskManager.task.Task;
 
 import java.io.*;
-import java.nio.file.Path;
 import java.util.*;
 
-/*
-* с учетом того, что нужно оставить только один конструктор, это решение - лучшее из того, что пришло вне в голову))
-* loadFromFile(file) запускается только в том случае, если мы хотим считать файл
-* */
+import static taskManager.manager.file.CsvConverter.*;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
-    CsvConverter csvConverter = new CsvConverter();
+    String pathToFile;
 
-    private FileBackedTasksManager(File file, boolean CheckReader) {
-        if (CheckReader) {
-            loadFromFile(file);
-        }
-    }
-
-    public static FileBackedTasksManager getTaskManagerForFile(File file, boolean CheckReader) {
-        return new FileBackedTasksManager(file, CheckReader);
+    public FileBackedTasksManager(File file) {
+        pathToFile = file.toString();
+        loadFromFile(file);
     }
 
     private void save() {
-        String path = String.valueOf(Path.of("src", "taskManager", "task", "file.csv"));
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathToFile))) {
             writer.write("id, тип, название, статус, описание, EpicId");
             writer.newLine();
 
-            for (Map.Entry<Integer, Task> entry : tasks.entrySet()) {
-                Task task = tasks.get(entry.getKey());
-                writer.write(csvConverter.taskToString(task));
+            for (Task task : getAllTask()) {
+                writer.write(taskToString(task));
+            }
+            for (Epic epic : getAllEpic()) {
+                writer.write(taskToString(epic));
+            }
+            for (Subtask subtask : getAllSubask()) {
+                writer.write(taskToString(subtask));
             }
 
-            for (Map.Entry<Integer, Epic> entry : epics.entrySet()) {
-                Epic epic = epics.get(entry.getKey());
-                writer.write(csvConverter.taskToString(epic));
-            }
-            for (Map.Entry<Integer, Subtask> entry : subtasks.entrySet()) {
-                Subtask subtask = subtasks.get(entry.getKey());
-                writer.write(csvConverter.taskToString(subtask));
-            }
-
-            List<Task> history = getHistory();
             writer.newLine();
-
-            for (Task task : history) {
-                writer.write(csvConverter.historyToString(task));
-            }
+            writer.write(historyToString(getHistory()));
 
         } catch (IOException exception) {
             throw new ManagerSaveException("Произошла ошибка во время записи файла и " +
@@ -76,36 +58,48 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             throw new ManagerSaveException("Произошла ошибка во время считывания информации из файла и " +
                     "вы смогли увидеть моё собственное расчудесное непроверяемое исключение");
         }
+        if (!list.isEmpty()) {
+            int maxId = 0;
+            for (int i = 1; i < list.size() - 2; i++) {
 
-        for (int i = 1; i < list.size() - 2; i++) {
+                String[] arrayOfStrings = list.get(i).split(",");
+                int id = Integer.parseInt(arrayOfStrings[0].trim());
 
-            String[] arrayOfStrings = list.get(i).split(",");
-            int id = Integer.parseInt(arrayOfStrings[0].trim());
+                if (id > maxId) {
+                    maxId = id;
+                }
+                if (Objects.equals(arrayOfStrings[1], "TASK")) {
+                    tasks.put(id, stringToTask(arrayOfStrings));
+                } else if (Objects.equals(arrayOfStrings[1], "EPIC")) {
+                    epics.put(id, stringToEpic(arrayOfStrings));
+                } else if (Objects.equals(arrayOfStrings[1], "SUBTASK")) {
+                    subtasks.put(id, stringToSubtask(arrayOfStrings));
+                    int epicIdOfSubtask = Integer.parseInt(arrayOfStrings[5]);
+                    Epic epic = epics.get(epicIdOfSubtask);
+                    if (epic != null) {
+                        epic.addSubTaskId(id);
+                    }
+                }
+            }
 
-            if (Objects.equals(arrayOfStrings[1], "TASK")) {
-                tasks.put(id, (CsvConverter.stringToTask(arrayOfStrings)));
-                newId();
-            } else if (Objects.equals(arrayOfStrings[1], "EPIC")) {
-                epics.put(id, CsvConverter.stringToEpic(arrayOfStrings));
-                newId();
-            } else if (Objects.equals(arrayOfStrings[1], "SUBTASK")) {
-                subtasks.put(id, CsvConverter.stringToSubtask(arrayOfStrings));
-                newId();
+            setId(maxId);
+
+            String historyString = list.get(list.size() - 1);
+            String[] taskId = historyString.split(",");
+
+            for (String s : taskId) {
+                int id = Integer.parseInt(s.trim());
+
+                if (subtasks.containsKey(id)) {
+                    historyManager.add(subtasks.get(id));
+                } else if (epics.containsKey(id)) {
+                    historyManager.add(epics.get(id));
+                } else if (tasks.containsKey(id)) {
+                    historyManager.add(tasks.get(id));
+                }
             }
         }
 
-        String[] taskId = list.get(list.size() - 1).split(",");
-        for (String s : taskId) {
-            int id = Integer.parseInt(s.trim());
-
-            if (subtasks.containsKey(id)) {
-                getSubtask(id);
-            } else if (epics.containsKey(id)) {
-                super.getEpic(id);
-            } else if (tasks.containsKey(id)) {
-                getTask(id);
-            }
-        }
     }
 
     @Override

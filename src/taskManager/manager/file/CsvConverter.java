@@ -5,29 +5,34 @@ import taskManager.task.Status;
 import taskManager.task.Subtask;
 import taskManager.task.Task;
 
+import java.util.List;
+
 public class CsvConverter {
 
 
-
-
-    public String taskToString(Task task) {
+    public static String taskToString(Task task) {
         return String.format("%s,%s,%s,%s,%s\n", task.getId(), TaskType.TASK, task.getTitle(),
                 task.getStatus(), task.getDescription());
     }
 
-    public String taskToString(Epic epic) {
+    public static String taskToString(Epic epic) {
         return String.format("%s,%s,%s,%s,%s\n", epic.getId(), TaskType.EPIC, epic.getTitle(),
                 epic.getStatus(), epic.getDescription());
     }
 
-    public String taskToString(Subtask subtask) {
+    public static String taskToString(Subtask subtask) {
         return String.format("%s,%s,%s,%s,%s,%s\n", subtask.getId(), TaskType.SUBTASK, subtask.getTitle(),
                 subtask.getStatus(), subtask.getDescription(), subtask.getEpicId());
     }
 
-    public String historyToString(Task task) {
-        return (task.getId() + ",");
+    public static String historyToString(List<Task> history) {
+        StringBuilder sb = new StringBuilder();
+        for (Task task : history) {
+            sb.append(task.getId()).append(",");
+        }
+        return sb.toString();
     }
+
 
     public static Task stringToTask(String[] arrayOfStrings) {
         int id = Integer.parseInt(arrayOfStrings[0].trim());

@@ -17,8 +17,8 @@ public class Managers {
         return new InMemoryTaskManager();
     }
 
-    public static FileBackedTasksManager getDefaultFileBackedTasksManager(File file, boolean CheckReader) {
-        return FileBackedTasksManager.getTaskManagerForFile(file, CheckReader);
+    public static FileBackedTasksManager getDefaultFileBackedTasksManager(File file) {
+        return new FileBackedTasksManager(file);
     }
 
 }
