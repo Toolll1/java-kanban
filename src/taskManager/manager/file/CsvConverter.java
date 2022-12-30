@@ -5,10 +5,10 @@ import taskManager.task.Status;
 import taskManager.task.Subtask;
 import taskManager.task.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CsvConverter {
-
 
     public static String taskToString(Task task) {
         return String.format("%s,%s,%s,%s,%s\n", task.getId(), TaskType.TASK, task.getTitle(),
@@ -60,6 +60,16 @@ public class CsvConverter {
         int epicId = Integer.parseInt(arrayOfStrings[5]);
 
         return new Subtask(status, title, description, id, epicId);
+    }
+
+    public static List<Integer> stringToListInteger(String historyString) {
+        List<Integer> result = new ArrayList<>();
+        String[] taskId = historyString.split(",");
+
+        for (String s : taskId) {
+            result.add(Integer.valueOf(s.trim()));
+        }
+        return result;
     }
 
 }

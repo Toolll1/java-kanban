@@ -26,16 +26,10 @@ public class MainTestFileReader {
         }
 
         System.out.println();
-        taskManager.createSubtask(new Subtask(Status.NEW, "Subtask2.1", "описание1", 7));
-        taskManager.updateSubtask(4, new Subtask(Status.IN_PROGRESS, "Subtask1.1", "описание1",4, 3));
-        taskManager.getSubtask(4);
         System.out.println(taskManager.getSubtasksByEpicId(3));
-        System.out.println();
-        System.out.println(taskManager.getSubtasksByEpicId(7));
         System.out.println();
         System.out.println(taskManager.getAllEpic());
         System.out.println();
-        taskManager.getSubtask(8);
         System.out.println(taskManager.getAllSubask());
 
     }
