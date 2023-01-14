@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface TaskManager {
 
+    List<Task> getPrioritizedTasks();
+
     List<Task> getHistory();
 
     public void createTask(Task task);

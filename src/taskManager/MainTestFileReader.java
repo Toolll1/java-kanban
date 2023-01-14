@@ -32,6 +32,14 @@ public class MainTestFileReader {
         System.out.println();
         System.out.println(taskManager.getAllSubask());
 
-    }
+        List<Task> tasks = taskManager.getPrioritizedTasks();
 
+        System.out.println();
+        System.out.println("А теперь в порядке приоритета");
+        System.out.println();
+        for (Task task : tasks) {
+            System.out.println(task);
+        }
+
+    }
 }

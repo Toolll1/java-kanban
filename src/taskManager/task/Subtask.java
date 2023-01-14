@@ -1,18 +1,19 @@
 package taskManager.task;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Subtask extends Task {
 
     protected Integer epicId;
 
-    public Subtask(Status status, String title, String description, int epicId) {
-        super(status, title, description, epicId);
+    public Subtask(Status status, String title, String description, int epicId, LocalDateTime startTime, int duration) {
+        super(status, title, description, epicId, startTime, duration);
         this.epicId = epicId;
     }
 
-    public Subtask(Status status, String title, String description, int Id, Integer epicId) {
-        super(status, title, description, Id);
+    public Subtask(Status status, String title, String description, int Id, Integer epicId, LocalDateTime startTime, int duration) {
+        super(status, title, description, Id, startTime, duration);
         this.epicId = epicId;
     }
 
@@ -47,6 +48,9 @@ public class Subtask extends Task {
                 ", status=" + status +
                 ", description='" + description + '\'' +
                 ", epicId=" + epicId +
+                ", startTime='" + startTime.format(formatter) + '\'' +
+                ", endTime='" + getEndTime().format(formatter) + '\'' +
+                ", duration='" + super.durationConverter(duration) +
                 '}';
     }
 }
