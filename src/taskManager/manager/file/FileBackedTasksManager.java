@@ -20,84 +20,89 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         loadFromFile(file);
     }
 
-    private void save() {
+    public void save() {
+        if (tasks.size() > 0 || epics.size() > 0 || subtasks.size() > 0) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathToFile))) {
+                writer.write("id, тип, название, статус, описание, EpicId, startTime, duration");
+                writer.newLine();
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathToFile))) {
-            writer.write("id, тип, название, статус, описание, EpicId, startTime, duration");
-            writer.newLine();
+                for (Task task : getAllTask()) {
+                    writer.write(taskToString(task));
+                }
+                for (Epic epic : getAllEpic()) {
+                    writer.write(taskToString(epic));
+                }
+                for (Subtask subtask : getAllSubtask()) {
+                    writer.write(taskToString(subtask));
+                }
 
-            for (Task task : getAllTask()) {
-                writer.write(taskToString(task));
+                writer.newLine();
+                writer.write(historyToString(getHistory()));
+
+            } catch (IOException exception) {
+                throw new ManagerSaveException("Произошла ошибка во время записи файла, но " +
+                        "вы смогли увидеть моё собственное непроверяемое исключение");
             }
-            for (Epic epic : getAllEpic()) {
-                writer.write(taskToString(epic));
-            }
-            for (Subtask subtask : getAllSubask()) {
-                writer.write(taskToString(subtask));
-            }
-
-            writer.newLine();
-            writer.write(historyToString(getHistory()));
-
-        } catch (IOException exception) {
-            throw new ManagerSaveException("Произошла ошибка во время записи файла, но " +
-                    "вы смогли увидеть моё собственное непроверяемое исключение");
         }
     }
 
-    private void loadFromFile(File file) {
+    public void loadFromFile(File file) {
+        if (file.length() > 0) {
+            List<String> list = new ArrayList<>();
 
-        List<String> list = new ArrayList<>();
-
-        try (Reader fileReader = new FileReader(file); BufferedReader br = new BufferedReader(fileReader)) {
-            while (br.ready()) {
-                String line = br.readLine();
-                list.add(line);
+            try (Reader fileReader = new FileReader(file); BufferedReader br = new BufferedReader(fileReader)) {
+                while (br.ready()) {
+                    String line = br.readLine();
+                    list.add(line);
+                }
+            } catch (IOException e) {
+                throw new ManagerSaveException("Произошла ошибка во время считывания информации из файла, но " +
+                        "вы смогли увидеть моё собственное расчудесное непроверяемое исключение");
             }
-        } catch (IOException e) {
-            throw new ManagerSaveException("Произошла ошибка во время считывания информации из файла, но " +
-                    "вы смогли увидеть моё собственное расчудесное непроверяемое исключение");
+            if (!list.isEmpty()) {
+                int maxId = 0;
+                for (int i = 1; i < list.size() - 2; i++) {
+
+                    String[] arrayOfStrings = list.get(i).split(",");
+                    int id = Integer.parseInt(arrayOfStrings[0].trim());
+
+                    if (id > maxId) {
+                        maxId = id;
+                    }
+                    if (Objects.equals(arrayOfStrings[1], String.valueOf(TaskType.TASK))) {
+                        tasks.put(id, stringToTask(arrayOfStrings));
+                        addNewPrioritizedTask(stringToTask(arrayOfStrings));
+                    } else if (Objects.equals(arrayOfStrings[1], String.valueOf(TaskType.EPIC))) {
+                        epics.put(id, stringToEpic(arrayOfStrings));
+                    } else if (Objects.equals(arrayOfStrings[1], String.valueOf(TaskType.SUBTASK))) {
+                        subtasks.put(id, stringToSubtask(arrayOfStrings));
+                        addNewPrioritizedTask(stringToSubtask(arrayOfStrings));
+                    }
+                }
+
+                for (Subtask value : subtasks.values()) {
+                    Epic epic = epics.get(value.getEpicId());
+                    if (epic != null) {
+                        epic.addSubTaskId(value.getId());
+                    }
+                }
+
+                setId(maxId);
+
+                String historyString = list.get(list.size() - 1);
+
+                for (Integer id : stringToListInteger(historyString)) {
+                    if (subtasks.containsKey(id)) {
+                        historyManager.add(subtasks.get(id));
+                    } else if (epics.containsKey(id)) {
+                        historyManager.add(epics.get(id));
+                    } else if (tasks.containsKey(id)) {
+                        historyManager.add(tasks.get(id));
+                    }
+                }
+            }
         }
-        if (!list.isEmpty()) {
-            int maxId = 0;
-            for (int i = 1; i < list.size() - 2; i++) {
 
-                String[] arrayOfStrings = list.get(i).split(",");
-                int id = Integer.parseInt(arrayOfStrings[0].trim());
-
-                if (id > maxId) {
-                    maxId = id;
-                }
-                if (Objects.equals(arrayOfStrings[1], String.valueOf(TaskType.TASK))) {
-                    tasks.put(id, stringToTask(arrayOfStrings));
-                } else if (Objects.equals(arrayOfStrings[1], String.valueOf(TaskType.EPIC))) {
-                    epics.put(id, stringToEpic(arrayOfStrings));
-                } else if (Objects.equals(arrayOfStrings[1], String.valueOf(TaskType.SUBTASK))) {
-                    subtasks.put(id, stringToSubtask(arrayOfStrings));
-                }
-            }
-
-            for (Subtask value : subtasks.values()) {
-                Epic epic = epics.get(value.getEpicId());
-                if (epic != null) {
-                    epic.addSubTaskId(value.getId());
-                }
-            }
-
-            setId(maxId);
-
-            String historyString = list.get(list.size() - 1);
-
-            for (Integer id : stringToListInteger(historyString)) {
-                if (subtasks.containsKey(id)) {
-                    historyManager.add(subtasks.get(id));
-                } else if (epics.containsKey(id)) {
-                    historyManager.add(epics.get(id));
-                } else if (tasks.containsKey(id)) {
-                    historyManager.add(tasks.get(id));
-                }
-            }
-        }
     }
 
     @Override

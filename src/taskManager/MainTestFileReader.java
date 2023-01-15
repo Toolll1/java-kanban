@@ -2,8 +2,6 @@ package taskManager;
 
 import taskManager.manager.file.FileBackedTasksManager;
 import taskManager.manager.Managers;
-import taskManager.task.Status;
-import taskManager.task.Subtask;
 import taskManager.task.Task;
 
 import java.io.File;
@@ -30,7 +28,7 @@ public class MainTestFileReader {
         System.out.println();
         System.out.println(taskManager.getAllEpic());
         System.out.println();
-        System.out.println(taskManager.getAllSubask());
+        System.out.println(taskManager.getAllSubtask());
 
         List<Task> tasks = taskManager.getPrioritizedTasks();
 

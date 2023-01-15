@@ -41,7 +41,7 @@ public class MainTestFileWrite {
         System.out.println();
         System.out.println(taskManager.getAllEpic());
         System.out.println();
-        System.out.println(taskManager.getAllSubask());
+        System.out.println(taskManager.getAllSubtask());
 
         taskManager.getTask(1);
         taskManager.getTask(2);
@@ -60,7 +60,7 @@ public class MainTestFileWrite {
 
         taskManager.deleteTask(2);
         taskManager.updateTask(new Task(Status.IN_PROGRESS, "Task1", "описание", 1,
-                LocalDateTime.of(2023, 1, 1, 1, 0, 0), 3*25*61));
+                LocalDateTime.of(2023, 5, 1, 1, 0, 0), 3*25*61));
         taskManager.getTask(1);
 
         System.out.println();
@@ -72,5 +72,15 @@ public class MainTestFileWrite {
             System.out.println(n + " - " + history1.get(i));
             n++;
         }
+
+        List<Task> tasks = taskManager.getPrioritizedTasks();
+
+        System.out.println();
+        System.out.println("А теперь в порядке приоритета");
+        System.out.println();
+        for (Task task : tasks) {
+            System.out.println(task);
+        }
+
     }
 }

@@ -8,7 +8,6 @@ import taskManager.task.Subtask;
 import taskManager.task.Task;
 
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
 
 public class MainTestHystory {
@@ -38,7 +37,7 @@ public class MainTestHystory {
         System.out.println();
         System.out.println(taskManager.getAllEpic());
         System.out.println();
-        System.out.println(taskManager.getAllSubask());
+        System.out.println(taskManager.getAllSubtask());
 
         taskManager.getTask(1);
         taskManager.getTask(2);

@@ -47,7 +47,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
-        if (tasks.containsKey(task.getId())) {
+        if (task != null && tasks.containsKey(task.getId())) {
             addNewPrioritizedTask(task);
             tasks.replace(task.getId(), task);
         } else {
@@ -84,7 +84,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateEpic(Epic epic) {
-        if (epics.containsKey(epic.getId())) {
+        if (epic != null && epics.containsKey(epic.getId())) {
             epics.put(epic.getId(), epic);
             updateEpicStatus(epic);
             updateEpicTime(epic);
@@ -143,7 +143,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtask(int subtaskId, Subtask subtask) {
-        if (subtasks.containsKey(subtaskId)) {
+        if (subtask != null && subtasks.containsKey(subtaskId)) {
             addNewPrioritizedTask(subtask);
             subtasks.replace(subtaskId, subtask);
             Epic epic = epics.get(subtask.getEpicId());
@@ -198,16 +198,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Collection<Task> getAllTask() {
         if (tasks.size() == 0) {
-            System.out.println("Список задач пуст");
             return Collections.emptyList();
         }
         return new ArrayList<>(tasks.values());
     }
 
     @Override
-    public Collection<Subtask> getAllSubask() {
+    public Collection<Subtask> getAllSubtask() {
         if (subtasks.size() == 0) {
-            System.out.println("Список подзадач пуст");
             return Collections.emptyList();
         }
         return new ArrayList<>(subtasks.values());
@@ -216,7 +214,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Collection<Epic> getAllEpic() {
         if (epics.size() == 0) {
-            System.out.println("Список эпиков пуст");
             return Collections.emptyList();
         }
         return new ArrayList<>(epics.values());
@@ -295,7 +292,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private void addNewPrioritizedTask(Task task) {
+    protected void addNewPrioritizedTask(Task task) {
         prioritizedTasks.add(task);
         validateTaskPriority();
     }

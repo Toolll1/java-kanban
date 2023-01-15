@@ -42,7 +42,7 @@ public interface TaskManager {
 
     public Collection<Task> getAllTask();
 
-    public Collection<Subtask> getAllSubask();
+    public Collection<Subtask> getAllSubtask();
 
     public Collection<Epic> getAllEpic();
 
