@@ -32,6 +32,9 @@ public class MainTestHystory {
         taskManager.createEpic(new Epic(Status.NEW, "Epic2", "описание2",
                 LocalDateTime.of(2023, 3, 2, 0, 1, 1), 60*24*365));
 
+        taskManager.updateSubtask(new Subtask(Status.IN_PROGRESS, "Subtask1.1", "описание1", 4,3,
+                LocalDateTime.of(2023, 1, 14, 15, 30, 0), 5));
+
         System.out.println("Добавили всё");
         System.out.println(taskManager.getAllTask());
         System.out.println();
@@ -55,7 +58,7 @@ public class MainTestHystory {
         taskManager.getSubtask(4);
 
 
-/*        System.out.println();
+        System.out.println();
         System.out.println();
         System.out.println("История запросов:");
         List<Task> history = taskManager.getHistory();
@@ -63,7 +66,7 @@ public class MainTestHystory {
         for (int i = (history.size() - 1); i >= 0; i--) {
             System.out.println(n + " - " + history.get(i));
             n++;
-        }*/
+        }
 
         List<Task> tasks = taskManager.getPrioritizedTasks();
 

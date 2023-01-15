@@ -32,7 +32,7 @@ public interface TaskManager {
 
     public void createSubtask(Subtask subtask);
 
-    public void updateSubtask(int subtaskId, Subtask subtask);
+    public void updateSubtask(Subtask subtask);
 
     Subtask getSubtask(int subtaskId);
 

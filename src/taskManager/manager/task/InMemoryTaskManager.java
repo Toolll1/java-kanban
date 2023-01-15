@@ -73,6 +73,8 @@ public class InMemoryTaskManager implements TaskManager {
             prioritizedTasks.removeIf(task -> task.getId() == taskId);
             tasks.remove(taskId);
             historyManager.remove(taskId);
+        } else {
+            System.out.println("нет такого таска");
         }
     }
 
@@ -142,10 +144,10 @@ public class InMemoryTaskManager implements TaskManager {
 
 
     @Override
-    public void updateSubtask(int subtaskId, Subtask subtask) {
-        if (subtask != null && subtasks.containsKey(subtaskId)) {
+    public void updateSubtask(Subtask subtask) {
+        if (subtask != null && subtasks.containsKey(subtask.getId())) {
             addNewPrioritizedTask(subtask);
-            subtasks.replace(subtaskId, subtask);
+            subtasks.replace(subtask.getId(), subtask);
             Epic epic = epics.get(subtask.getEpicId());
             updateEpicStatus(epic);
             updateEpicTime(epic);
@@ -179,20 +181,24 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteSubtask(int subtaskId) {
-        Subtask subtask = subtasks.get(subtaskId);
-        int epicIdOfSubTask = subtasks.get(subtaskId).getEpicId();
-        Epic epic = epics.get(epicIdOfSubTask);
-        subtasks.remove(subtaskId);
-        historyManager.remove(subtaskId);
-        List<Integer> subtasksFromEpic = epic.getSubtaskIds();
-        for (int i = 0; i < subtasksFromEpic.size(); i++) {
-            if (subtasksFromEpic.get(i) == subtaskId) {
-                epic.removeSubTaskId(i);
+        if (subtasks.containsKey(subtaskId)) {
+            Subtask subtask = subtasks.get(subtaskId);
+            int epicIdOfSubtask = subtasks.get(subtaskId).getEpicId();
+            Epic epic = epics.get(epicIdOfSubtask);
+            subtasks.remove(subtaskId);
+            historyManager.remove(subtaskId);
+            List<Integer> subtasksFromEpic = epic.getSubtaskIds();
+            for (int i = 0; i < subtasksFromEpic.size(); i++) {
+                if (subtasksFromEpic.get(i) == subtaskId) {
+                    epic.removeSubTaskId(i);
+                }
             }
+            updateEpicStatus(epic);
+            updateEpicTime(epic);
+            prioritizedTasks.remove(subtask);
+        } else {
+            System.out.println("нет такого сабтаска");
         }
-        updateEpicStatus(epic);
-        updateEpicTime(epic);
-        prioritizedTasks.remove(subtask);
     }
 
     @Override
@@ -226,7 +232,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllSubtasks() {
-        subtasks.clear();
+
         for (Epic epic : epics.values()) {
             for (int subtaskId : epic.getSubtaskIds()) {
                 Subtask subtask = subtasks.get(subtaskId);
@@ -234,6 +240,7 @@ public class InMemoryTaskManager implements TaskManager {
                 subtasks.remove(subtaskId);
                 historyManager.remove(subtaskId);
             }
+            subtasks.clear();
             epic.getSubtaskIds().clear();
             updateEpicStatus(epic);
         }
@@ -293,6 +300,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     protected void addNewPrioritizedTask(Task task) {
+        if (prioritizedTasks.contains(task)) prioritizedTasks.remove(task);
         prioritizedTasks.add(task);
         validateTaskPriority();
     }
@@ -304,21 +312,28 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void updateEpicTime(Epic epic) {
         List<Subtask> subtasks = getSubtasksByEpicId(epic.getId());
-        LocalDateTime startTime = subtasks.get(0).getStartTime();
-        LocalDateTime endTime = subtasks.get(0).getEndTime();
+        if (subtasks.size() > 0) {
+            LocalDateTime startTime = subtasks.get(0).getStartTime();
+            LocalDateTime endTime = subtasks.get(0).getEndTime();
 
-        for (Subtask subtask : subtasks) {
-            if (subtask.getStartTime().isBefore(startTime)) {
-                startTime = subtask.getStartTime();
+            for (Subtask subtask : subtasks) {
+                if (subtask.getStartTime().isBefore(startTime)) {
+                    startTime = subtask.getStartTime();
+                }
+                if (subtask.getEndTime().isAfter(endTime)) {
+                    endTime = subtask.getEndTime();
+                }
             }
-            if (subtask.getEndTime().isAfter(endTime)) {
-                endTime = subtask.getEndTime();
-            }
+
+            epic.setStartTime(startTime);
+            epic.setEndTime(endTime);
+            Duration duration = Duration.between(startTime, endTime);
+            epic.setDuration((int) duration.toMinutes());
+        } else {
+            epic.setStartTime(null);
+            epic.setEndTime(null);
+            epic.setDuration(0);
         }
 
-        epic.setStartTime(startTime);
-        epic.setEndTime(endTime);
-        Duration duration = Duration.between(startTime, endTime);
-        epic.setDuration((int) duration.toMinutes());
     }
 }
