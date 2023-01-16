@@ -1,14 +1,13 @@
 package taskManager.task;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
 
-    private final ArrayList <Integer> subtaskIds = new ArrayList<>();
+    private final ArrayList<Integer> subtaskIds = new ArrayList<>();
 
     private LocalDateTime endTime;
 

@@ -10,7 +10,6 @@ import taskManager.task.Task;
 
 
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -40,9 +39,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createTask(Task task) {
-        task.setId(newId());
-        addNewPrioritizedTask(task);
-        tasks.put(task.getId(), task);
+        if (validateTaskPriority(task)) {
+            task.setId(newId());
+            addNewPrioritizedTask(task);
+            tasks.put(task.getId(), task);
+        }
     }
 
     @Override
@@ -124,20 +125,22 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createSubtask(Subtask subtask) {
-        if (subtask.getEpicId() != null) {
-            int epicIdOfSubtask = subtask.getEpicId();
-            Epic epic = epics.get(epicIdOfSubtask);
-            if (epic != null) {
-                int subtaskId = this.newId();
-                subtask.setId(subtaskId);
-                subtasks.put(subtaskId, subtask);
-                addNewPrioritizedTask(subtask);
+        if (validateTaskPriority(subtask)) {
+            if (subtask.getEpicId() != null) {
+                int epicIdOfSubtask = subtask.getEpicId();
+                Epic epic = epics.get(epicIdOfSubtask);
+                if (epic != null) {
+                    int subtaskId = this.newId();
+                    subtask.setId(subtaskId);
+                    subtasks.put(subtaskId, subtask);
+                    addNewPrioritizedTask(subtask);
 
-                epic.addSubTaskId(subtaskId);
-                updateEpicStatusAndTime(epic);
+                    epic.addSubTaskId(subtaskId);
+                    updateEpicStatusAndTime(epic);
+                }
+            } else {
+                System.out.println("ошибка: у сабтаска нет id эпика");
             }
-        } else {
-            System.out.println("ошибка: у сабтаска нет id эпика");
         }
     }
 
@@ -314,28 +317,22 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void updateEpicTime(Epic epic) {
         List<Subtask> subtasks = getSubtasksByEpicId(epic.getId());
+        subtasks.sort(taskComparator);
+
         if (subtasks.size() > 0) {
             LocalDateTime startTime = subtasks.get(0).getStartTime();
-            LocalDateTime endTime = subtasks.get(0).getEndTime();
-
+            Duration duration = Duration.ofMinutes(0);
             for (Subtask subtask : subtasks) {
-                if (subtask.getStartTime().isBefore(startTime)) {
-                    startTime = subtask.getStartTime();
-                }
-                if (subtask.getEndTime().isAfter(endTime)) {
-                    endTime = subtask.getEndTime();
-                }
+                duration = duration.plus(subtask.getDuration());
             }
 
             epic.setStartTime(startTime);
-            epic.setEndTime(endTime);
-            Duration duration = Duration.between(startTime, endTime);
+            epic.setEndTime(startTime.plusMinutes(duration.toMinutes()));
             epic.setDuration(duration);
         } else {
             epic.setStartTime(null);
             epic.setEndTime(null);
             epic.setDuration(null);
         }
-
     }
 }

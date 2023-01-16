@@ -1,4 +1,8 @@
+package task;
+
 import org.junit.jupiter.api.Test;
+import taskManager.manager.Managers;
+import taskManager.manager.history.HistoryManager;
 import taskManager.manager.task.TaskManager;
 import taskManager.task.Epic;
 import taskManager.task.Status;
@@ -12,7 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-abstract class TaskManagerTest<T extends TaskManager> {
+public abstract class TaskManagerTest<T extends TaskManager> {
     protected T manager;
 
     protected Task createTask() {
@@ -31,15 +35,33 @@ abstract class TaskManagerTest<T extends TaskManager> {
                 LocalDateTime.of(2023, 1, 14, 15, 30, 0), Duration.ofMinutes(5));
     }
 
+
     @Test
-    void addNewTask() {
+    public void addTasksToHistory() {
+        HistoryManager historyManager = Managers.getDefaultHistory();
+        Task task = createTask();
+
+        manager.createTask(task);
+        historyManager.add(task);
+
+        assertEquals(manager.getAllTask(), historyManager.getHistory());
+    }
+
+    @Test
+    void addNewTask_setNewId_existIdInObject() {
         Task task = createTask();
         manager.createTask(task);
 
         final Task savedTask = manager.getTask(task.getId());
 
         assertNotNull(savedTask, "Задача не найдена.");
-        assertEquals(task, savedTask, "Задачи не совпадают.");
+        assertEquals(task.getId(), savedTask.getId(), "Id задач не совпадают.");
+        assertEquals(task.getTitle(), savedTask.getTitle(), "Названия задач не совпадают.");
+        assertEquals(task.getDescription(), savedTask.getDescription(), "Описания задач не совпадают.");
+        assertEquals(task.getDuration(), savedTask.getDuration(), "Продолжительности задач не совпадают.");
+        assertEquals(task.getStatus(), savedTask.getStatus(), "Статусы задач не совпадают.");
+        assertEquals(task.getStartTime(), savedTask.getStartTime(), "Время начала задач не совпадает.");
+        assertEquals(task.getEndTime(), savedTask.getEndTime(), "Время окончания задач не совпадает.");
 
         final List<Task> tasks = (List<Task>) manager.getAllTask();
 
@@ -49,14 +71,20 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void addNewEpic() {
+    void addNewEpic_setNewId_existIdInObject() {
         Epic epic = createEpic();
         manager.createEpic(epic);
 
         final Epic savedEpic = manager.getEpic(epic.getId());
 
         assertNotNull(savedEpic, "Эпик не найден.");
-        assertEquals(epic, savedEpic, "Эпики не совпадают.");
+        assertEquals(epic.getId(), savedEpic.getId(), "Id задач не совпадают.");
+        assertEquals(epic.getTitle(), savedEpic.getTitle(), "Названия задач не совпадают.");
+        assertEquals(epic.getDescription(), savedEpic.getDescription(), "Описания задач не совпадают.");
+        assertEquals(epic.getDuration(), savedEpic.getDuration(), "Продолжительности задач не совпадают.");
+        assertEquals(epic.getStatus(), savedEpic.getStatus(), "Статусы задач не совпадают.");
+        assertEquals(epic.getStartTime(), savedEpic.getStartTime(), "Время начала задач не совпадает.");
+        assertEquals(epic.getEndTime(), savedEpic.getEndTime(), "Время окончания задач не совпадает.");
 
         final List<Epic> epics = (List<Epic>) manager.getAllEpic();
 
@@ -66,7 +94,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void addNewSubtask() {
+    void addNewSubtask_setNewId_existIdInObject() {
         Epic epic = createEpic();
         manager.createEpic(epic);
         Subtask subtask = createSubtask(epic);
@@ -75,7 +103,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
         final Subtask savedTask = manager.getSubtask(subtask.getId());
 
         assertNotNull(savedTask, "Задача не найдена.");
-        assertEquals(subtask, savedTask, "Задачи не совпадают.");
+        assertEquals(subtask.getId(), savedTask.getId(), "Id задач не совпадают.");
+        assertEquals(subtask.getEpicId(), savedTask.getEpicId(), "Id эпиков задач не совпадают.");
+        assertEquals(subtask.getTitle(), savedTask.getTitle(), "Названия задач не совпадают.");
+        assertEquals(subtask.getDescription(), savedTask.getDescription(), "Описания задач не совпадают.");
+        assertEquals(subtask.getDuration(), savedTask.getDuration(), "Продолжительности задач не совпадают.");
+        assertEquals(subtask.getStatus(), savedTask.getStatus(), "Статусы задач не совпадают.");
+        assertEquals(subtask.getStartTime(), savedTask.getStartTime(), "Время начала задач не совпадает.");
+        assertEquals(subtask.getEndTime(), savedTask.getEndTime(), "Время окончания задач не совпадает.");
 
         final List<Subtask> subtasks = (List<Subtask>) manager.getAllSubtask();
 
@@ -143,14 +178,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void calculationOfTheEpicStatusWithAnEmptyListOfSubtasks () {
+    public void calculationOfTheEpicStatusWithAnEmptyListOfSubtasks() {
         Epic epic = createEpic();
         manager.createEpic(epic);
         assertEquals(Status.NEW, manager.getEpic(epic.getId()).getStatus());
     }
 
     @Test
-    public void calculationOfTheEpicStatusForAllSubtasksWithTheNewStatus () {
+    public void calculationOfTheEpicStatusForAllSubtasksWithTheNewStatus() {
         Epic epic = createEpic();
 
         manager.createEpic(epic);
@@ -165,7 +200,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void calculationOfTheEpicStatusForAllSubtasksWithTheDoneStatus () {
+    public void calculationOfTheEpicStatusForAllSubtasksWithTheDoneStatus() {
         Epic epic = createEpic();
 
         manager.createEpic(epic);
@@ -181,7 +216,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
 
     @Test
-    public void calculationOfTheEpicStatusForAllSubtasksWithNewAndDoneStatuses () {
+    public void calculationOfTheEpicStatusForAllSubtasksWithNewAndDoneStatuses() {
         Epic epic = createEpic();
 
         manager.createEpic(epic);
@@ -196,7 +231,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void calculationOfTheEpicStatusForAllSubtasksWithNewAndDoneAndIiProgressStatuses () {
+    public void calculationOfTheEpicStatusForAllSubtasksWithNewAndDoneAndIiProgressStatuses() {
         Epic epic = createEpic();
 
         manager.createEpic(epic);

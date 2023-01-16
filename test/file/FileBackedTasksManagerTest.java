@@ -1,6 +1,10 @@
+package file;
+
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import task.TaskManagerTest;
 import taskManager.manager.file.FileBackedTasksManager;
 import taskManager.manager.task.InMemoryTaskManager;
 import taskManager.task.Epic;
@@ -16,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.time.Duration.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
@@ -47,8 +50,8 @@ class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         manager.getTask(1);
         FileBackedTasksManager fileManager = new FileBackedTasksManager(file);
         fileManager.loadFromFile(file);
-        assertEquals(List.of(task), manager.getAllTask());
-        assertEquals(List.of(epic), manager.getAllEpic());
+        Assertions.assertEquals(List.of(task), manager.getAllTask());
+        Assertions.assertEquals(List.of(epic), manager.getAllEpic());
     }
 
     @Test
@@ -56,9 +59,9 @@ class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         FileBackedTasksManager fileManager = new FileBackedTasksManager(file);
         fileManager.save();
         fileManager.loadFromFile(file);
-        assertEquals(Collections.EMPTY_LIST, manager.getAllTask());
-        assertEquals(Collections.EMPTY_LIST, manager.getAllEpic());
-        assertEquals(Collections.EMPTY_LIST, manager.getAllSubtask());
+        Assertions.assertEquals(Collections.EMPTY_LIST, manager.getAllTask());
+        Assertions.assertEquals(Collections.EMPTY_LIST, manager.getAllEpic());
+        Assertions.assertEquals(Collections.EMPTY_LIST, manager.getAllSubtask());
     }
 
     @Test
@@ -66,7 +69,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         FileBackedTasksManager fileManager = new FileBackedTasksManager(file);
         fileManager.save();
         fileManager.loadFromFile(file);
-        assertEquals(Collections.EMPTY_LIST, manager.getHistory());
+        Assertions.assertEquals(Collections.EMPTY_LIST, manager.getHistory());
     }
 
 

@@ -14,17 +14,17 @@ public class CsvConverter {
 
     public static String taskToString(Task task) {
         return String.format("%s,%s,%s,%s,%s,%s,%s\n", task.getId(), TaskType.TASK, task.getTitle(),
-                task.getStatus(), task.getDescription(),task.getStartTime(),task.getDuration());
+                task.getStatus(), task.getDescription(), task.getStartTime(), task.getDuration());
     }
 
     public static String taskToString(Epic epic) {
         return String.format("%s,%s,%s,%s,%s,%s,%s\n", epic.getId(), TaskType.EPIC, epic.getTitle(),
-                epic.getStatus(), epic.getDescription(),epic.getStartTime(),epic.getDuration());
+                epic.getStatus(), epic.getDescription(), epic.getStartTime(), epic.getDuration());
     }
 
     public static String taskToString(Subtask subtask) {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", subtask.getId(), TaskType.SUBTASK, subtask.getTitle(),
-                subtask.getStatus(), subtask.getDescription(), subtask.getEpicId(),subtask.getStartTime(),
+                subtask.getStatus(), subtask.getDescription(), subtask.getEpicId(), subtask.getStartTime(),
                 subtask.getDuration());
     }
 
