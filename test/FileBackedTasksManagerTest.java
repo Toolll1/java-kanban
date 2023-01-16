@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+import static java.time.Duration.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager> {
@@ -38,10 +39,10 @@ class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     @Test
     public void correctlySaveAndLoad() {
         Task task = new Task(Status.NEW, "Task1", "описание1",
-                LocalDateTime.of(2023, 5, 1, 1, 0, 0), 3*25*61);
+                LocalDateTime.of(2023, 5, 1, 1, 0, 0), ofMinutes(5000));
         manager.createTask(task);
         Epic epic = new Epic(Status.NEW, "Epic1", "описание1",
-                LocalDateTime.of(2023, 1, 2, 0, 0, 0), 0);
+                LocalDateTime.of(2023, 1, 2, 0, 0, 0), ofMinutes(0));
         manager.createEpic(epic);
         manager.getTask(1);
         FileBackedTasksManager fileManager = new FileBackedTasksManager(file);

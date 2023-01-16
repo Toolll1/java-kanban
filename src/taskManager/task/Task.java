@@ -1,5 +1,6 @@
 package taskManager.task;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -10,9 +11,9 @@ public class Task {
     protected Status status;
     protected Integer id;
     protected LocalDateTime startTime;
-    protected int duration;
+    protected Duration duration;
 
-    public Task(Status status, String title, String description, LocalDateTime startTime, int duration) {
+    public Task(Status status, String title, String description, LocalDateTime startTime, Duration duration) {
         this.title = title;
         this.description = description;
         this.status = status;
@@ -20,7 +21,7 @@ public class Task {
         this.duration = duration;
     }
 
-    public Task(Status status, String title, String description, int Id, LocalDateTime startTime, int duration) {
+    public Task(Status status, String title, String description, int Id, LocalDateTime startTime, Duration duration) {
         this.title = title;
         this.description = description;
         this.status = status;
@@ -37,11 +38,11 @@ public class Task {
         this.startTime = startTime;
     }
 
-    public int getDuration() {
+    public Duration getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Duration duration) {
         this.duration = duration;
     }
 
@@ -49,16 +50,8 @@ public class Task {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Status getStatus() {
@@ -91,25 +84,25 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        return startTime.plusMinutes(duration);
+        return startTime.plusMinutes(duration.toMinutes());
     }
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm:ss");
 
-    public String durationConverter(int duration) {
+    public String durationConverter(Duration duration) {
         int MINUTES_PER_HOUR = 60;
         int MINUTES_PER_DAY = MINUTES_PER_HOUR * 24;
 
-        if (duration <= MINUTES_PER_HOUR) {
-            return duration + "мин.";
-        } else if (duration <= MINUTES_PER_DAY) {
-            int hours = duration / MINUTES_PER_HOUR;
-            int minutes = duration % MINUTES_PER_HOUR;
+        if (duration.toMinutes() <= MINUTES_PER_HOUR) {
+            return duration.toMinutes() + "мин.";
+        } else if (duration.toMinutes() <= MINUTES_PER_DAY) {
+            int hours = (int) (duration.toMinutes() / MINUTES_PER_HOUR);
+            int minutes = (int) (duration.toMinutes() % MINUTES_PER_HOUR);
             return hours + "час. " + minutes + "мин.";
         } else {
-            int days = duration / MINUTES_PER_DAY;
-            int hours = duration % MINUTES_PER_DAY / MINUTES_PER_HOUR;
-            int minutes = duration % MINUTES_PER_DAY % MINUTES_PER_HOUR;
+            int days = (int) (duration.toMinutes() / MINUTES_PER_DAY);
+            int hours = (int) (duration.toMinutes() % MINUTES_PER_DAY / MINUTES_PER_HOUR);
+            int minutes = (int) (duration.toMinutes() % MINUTES_PER_DAY % MINUTES_PER_HOUR);
 
             return days + "дн. " + hours + "час. " + minutes + "мин.";
         }

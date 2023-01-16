@@ -1,5 +1,6 @@
 package taskManager.task;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -7,22 +8,18 @@ public class Subtask extends Task {
 
     protected Integer epicId;
 
-    public Subtask(Status status, String title, String description, int epicId, LocalDateTime startTime, int duration) {
+    public Subtask(Status status, String title, String description, int epicId, LocalDateTime startTime, Duration duration) {
         super(status, title, description, epicId, startTime, duration);
         this.epicId = epicId;
     }
 
-    public Subtask(Status status, String title, String description, int Id, Integer epicId, LocalDateTime startTime, int duration) {
+    public Subtask(Status status, String title, String description, int Id, Integer epicId, LocalDateTime startTime, Duration duration) {
         super(status, title, description, Id, startTime, duration);
         this.epicId = epicId;
     }
 
     public Integer getEpicId() {
         return epicId;
-    }
-
-    public void setEpicId(Integer epicId) {
-        this.epicId = epicId;
     }
 
     @Override

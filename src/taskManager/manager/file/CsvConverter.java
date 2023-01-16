@@ -5,6 +5,7 @@ import taskManager.task.Status;
 import taskManager.task.Subtask;
 import taskManager.task.Task;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +43,9 @@ public class CsvConverter {
         String description = arrayOfStrings[4];
         Status status = Status.valueOf(arrayOfStrings[3]);
         LocalDateTime startTime = LocalDateTime.parse(arrayOfStrings[5]);
-        int duration = Integer.parseInt((arrayOfStrings[6]));
+        Duration duration = Duration.parse((arrayOfStrings[6]));
 
-        return new Epic(status, title, description, id, startTime, duration);
+        return new Task(status, title, description, id, startTime, duration);
     }
 
     public static Epic stringToEpic(String[] arrayOfStrings) {
@@ -53,7 +54,7 @@ public class CsvConverter {
         String description = arrayOfStrings[4];
         Status status = Status.valueOf(arrayOfStrings[3]);
         LocalDateTime startTime = LocalDateTime.parse(arrayOfStrings[5]);
-        int duration = Integer.parseInt((arrayOfStrings[6]));
+        Duration duration = Duration.parse((arrayOfStrings[6]));
 
         return new Epic(status, title, description, id, startTime, duration);
     }
@@ -65,7 +66,7 @@ public class CsvConverter {
         Status status = Status.valueOf(arrayOfStrings[3]);
         int epicId = Integer.parseInt(arrayOfStrings[5]);
         LocalDateTime startTime = LocalDateTime.parse(arrayOfStrings[6]);
-        int duration = Integer.parseInt((arrayOfStrings[7]));
+        Duration duration = Duration.parse((arrayOfStrings[7]));
 
         return new Subtask(status, title, description, id, epicId, startTime, duration);
     }

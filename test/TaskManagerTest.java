@@ -5,6 +5,7 @@ import taskManager.task.Status;
 import taskManager.task.Subtask;
 import taskManager.task.Task;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -16,18 +17,18 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     protected Task createTask() {
         return new Task(Status.NEW, "Task1", "описание1",
-                LocalDateTime.of(2023, 5, 1, 1, 0, 0), 3 * 25 * 61);
+                LocalDateTime.of(2023, 5, 1, 1, 0, 0), Duration.ofMinutes(3 * 25 * 61));
     }
 
     protected Epic createEpic() {
 
         return new Epic(Status.NEW, "Epic1", "описание1",
-                LocalDateTime.of(2023, 1, 2, 0, 0, 0), 0);
+                LocalDateTime.of(2023, 1, 2, 0, 0, 0), Duration.ofMinutes(0));
     }
 
     protected Subtask createSubtask(Epic epic) {
         return new Subtask(Status.NEW, "Subtask1.1", "описание1", 1,
-                LocalDateTime.of(2023, 1, 14, 15, 30, 0), 5);
+                LocalDateTime.of(2023, 1, 14, 15, 30, 0), Duration.ofMinutes(5));
     }
 
     @Test
@@ -154,11 +155,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
         manager.createEpic(epic);
         manager.createSubtask(new Subtask(Status.NEW, "Subtask1.1", "описание1", 1,
-                LocalDateTime.of(2023, 1, 14, 15, 30, 0), 5));
+                LocalDateTime.of(2023, 1, 14, 15, 30, 0), Duration.ofMinutes(5)));
         manager.createSubtask(new Subtask(Status.NEW, "Subtask1.2", "описание2", 1,
-                LocalDateTime.of(2023, 1, 14, 15, 35, 0), 3));
+                LocalDateTime.of(2023, 1, 14, 15, 35, 0), Duration.ofMinutes(3)));
         manager.createSubtask(new Subtask(Status.NEW, "Subtask1.3", "описание3", 1,
-                LocalDateTime.of(2023, 1, 14, 15, 40, 0), 10));
+                LocalDateTime.of(2023, 1, 14, 15, 40, 0), Duration.ofMinutes(10)));
 
         assertEquals(Status.NEW, manager.getEpic(epic.getId()).getStatus());
     }
@@ -169,11 +170,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
         manager.createEpic(epic);
         manager.createSubtask(new Subtask(Status.DONE, "Subtask1.1", "описание1", 1,
-                LocalDateTime.of(2023, 1, 14, 15, 30, 0), 5));
+                LocalDateTime.of(2023, 1, 14, 15, 30, 0), Duration.ofMinutes(5)));
         manager.createSubtask(new Subtask(Status.DONE, "Subtask1.2", "описание2", 1,
-                LocalDateTime.of(2023, 1, 14, 15, 35, 0), 3));
+                LocalDateTime.of(2023, 1, 14, 15, 35, 0), Duration.ofMinutes(3)));
         manager.createSubtask(new Subtask(Status.DONE, "Subtask1.3", "описание3", 1,
-                LocalDateTime.of(2023, 1, 14, 15, 40, 0), 10));
+                LocalDateTime.of(2023, 1, 14, 15, 40, 0), Duration.ofMinutes(10)));
 
         assertEquals(Status.DONE, manager.getEpic(epic.getId()).getStatus());
     }
@@ -185,11 +186,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
         manager.createEpic(epic);
         manager.createSubtask(new Subtask(Status.NEW, "Subtask1.1", "описание1", 1,
-                LocalDateTime.of(2023, 1, 14, 15, 30, 0), 5));
+                LocalDateTime.of(2023, 1, 14, 15, 30, 0), Duration.ofMinutes(5)));
         manager.createSubtask(new Subtask(Status.DONE, "Subtask1.2", "описание2", 1,
-                LocalDateTime.of(2023, 1, 14, 15, 35, 0), 3));
+                LocalDateTime.of(2023, 1, 14, 15, 35, 0), Duration.ofMinutes(3)));
         manager.createSubtask(new Subtask(Status.DONE, "Subtask1.3", "описание3", 1,
-                LocalDateTime.of(2023, 1, 14, 15, 40, 0), 10));
+                LocalDateTime.of(2023, 1, 14, 15, 40, 0), Duration.ofMinutes(10)));
 
         assertEquals(Status.IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
     }
@@ -200,11 +201,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
         manager.createEpic(epic);
         manager.createSubtask(new Subtask(Status.NEW, "Subtask1.1", "описание1", 1,
-                LocalDateTime.of(2023, 1, 14, 15, 30, 0), 5));
+                LocalDateTime.of(2023, 1, 14, 15, 30, 0), Duration.ofMinutes(5)));
         manager.createSubtask(new Subtask(Status.DONE, "Subtask1.2", "описание2", 1,
-                LocalDateTime.of(2023, 1, 14, 15, 35, 0), 3));
+                LocalDateTime.of(2023, 1, 14, 15, 35, 0), Duration.ofMinutes(3)));
         manager.createSubtask(new Subtask(Status.IN_PROGRESS, "Subtask1.3", "описание3", 1,
-                LocalDateTime.of(2023, 1, 14, 15, 40, 0), 10));
+                LocalDateTime.of(2023, 1, 14, 15, 40, 0), Duration.ofMinutes(10)));
 
         assertEquals(Status.IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
     }

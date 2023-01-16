@@ -1,5 +1,6 @@
 package taskManager.task;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,12 +12,12 @@ public class Epic extends Task {
 
     private LocalDateTime endTime;
 
-    public Epic(Status status, String title, String description, LocalDateTime startTime, int duration) {
+    public Epic(Status status, String title, String description, LocalDateTime startTime, Duration duration) {
         super(status, title, description, startTime, duration);
         this.endTime = super.getEndTime();
     }
 
-    public Epic(Status status, String title, String description, int Id, LocalDateTime startTime, int duration) {
+    public Epic(Status status, String title, String description, int Id, LocalDateTime startTime, Duration duration) {
         super(status, title, description, Id, startTime, duration);
         this.endTime = super.getEndTime();
     }

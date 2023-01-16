@@ -9,8 +9,11 @@ import taskManager.task.Task;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static java.time.Duration.*;
 
 public class MainTestFileWrite {
 
@@ -20,21 +23,24 @@ public class MainTestFileWrite {
         FileBackedTasksManager taskManager = Managers.getDefaultFileBackedTasksManager(file);
 
         taskManager.createTask(new Task(Status.NEW, "Task1", "описание1",
-                LocalDateTime.of(2023, 5, 1, 1, 0, 0), 3*25*61));
+                LocalDateTime.of(2023, 5, 1, 1, 0, 0), ofMinutes(5000)));
         taskManager.createTask(new Task(Status.NEW, "Task2", "описание2",
-                LocalDateTime.of(2023, 1, 14, 15, 15, 0), 15));
+                LocalDateTime.of(2023, 1, 14, 15, 15, 0), ofMinutes(15)));
 
         taskManager.createEpic(new Epic(Status.NEW, "Epic1", "описание1",
-                LocalDateTime.of(2023, 1, 2, 0, 0, 0), 0));
+                LocalDateTime.of(2023, 1, 2, 0, 0, 0), ofMinutes(0)));
         taskManager.createSubtask(new Subtask(Status.NEW, "Subtask1.1", "описание1", 3,
-                LocalDateTime.of(2023, 1, 14, 15, 30, 0), 5));
+                LocalDateTime.of(2023, 1, 14, 15, 30, 0), ofMinutes(5)));
         taskManager.createSubtask(new Subtask(Status.NEW, "Subtask1.2", "описание2", 3,
-                LocalDateTime.of(2023, 1, 14, 15, 35, 0), 3));
+                LocalDateTime.of(2023, 1, 14, 15, 35, 0), ofMinutes(3)));
         taskManager.createSubtask(new Subtask(Status.NEW, "Subtask1.3", "описание3", 3,
-                LocalDateTime.of(2023, 1, 14, 15, 40, 0), 10));
+                LocalDateTime.of(2023, 1, 14, 15, 40, 0), ofMinutes(10)));
 
         taskManager.createEpic(new Epic(Status.NEW, "Epic2", "описание2",
-                LocalDateTime.of(2023, 3, 2, 0, 1, 1), 60*24*365));
+                LocalDateTime.of(2023, 3, 2, 0, 1, 1), ofMinutes(60*24*365)));
+
+        taskManager.updateSubtask(new Subtask(Status.IN_PROGRESS, "Subtask1.1", "описание1", 4,3,
+                LocalDateTime.of(2023, 1, 14, 15, 30, 0), ofMinutes(5)));
 
         System.out.println("Добавили всё");
         System.out.println(taskManager.getAllTask());
@@ -60,7 +66,7 @@ public class MainTestFileWrite {
 
         taskManager.deleteTask(2);
         taskManager.updateTask(new Task(Status.IN_PROGRESS, "Task1", "описание", 1,
-                LocalDateTime.of(2023, 5, 1, 1, 0, 0), 3*25*61));
+                LocalDateTime.of(2023, 5, 1, 1, 0, 0), ofMinutes(3*25*61)));
         taskManager.getTask(1);
 
         System.out.println();
