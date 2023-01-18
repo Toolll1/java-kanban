@@ -29,7 +29,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     protected Subtask createSubtask(Epic epic) {
-        return new Subtask(Status.NEW, "Subtask1.1", "описание1", 1,
+        return new Subtask(Status.NEW, "Subtask1.1", "описание1", epic.getId(),
                 LocalDateTime.of(2023, 1, 14, 15, 30, 0), Duration.ofMinutes(5));
     }
 
