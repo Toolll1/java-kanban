@@ -21,6 +21,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     public void save() {
+
         if (tasks.size() > 0 || epics.size() > 0 || subtasks.size() > 0) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathToFile))) {
                 writer.write("id, тип, название, статус, описание, EpicId, startTime, duration");
@@ -37,7 +38,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 }
 
                 writer.newLine();
-                writer.write(historyToString(getHistory()));
+                if (getHistory().size() > 0) writer.write(historyToString(getHistory()));
 
             } catch (IOException exception) {
                 throw new ManagerSaveException("Произошла ошибка во время записи файла, но " +
@@ -59,46 +60,48 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 throw new ManagerSaveException("Произошла ошибка во время считывания информации из файла, но " +
                         "вы смогли увидеть моё собственное расчудесное непроверяемое исключение");
             }
-            if (!list.isEmpty()) {
-                int maxId = 0;
-                for (int i = 1; i < list.size() - 2; i++) {
+            int lastLine = list.size() - 2;
+            if (list.get(list.size() - 1).isEmpty()) lastLine = list.size() - 1;
 
-                    String[] arrayOfStrings = list.get(i).split(",");
-                    int id = Integer.parseInt(arrayOfStrings[0].trim());
+            int maxId = 0;
+            for (int i = 1; i < lastLine; i++) {
 
-                    if (id > maxId) {
-                        maxId = id;
-                    }
-                    if (Objects.equals(arrayOfStrings[1], String.valueOf(TaskType.TASK))) {
-                        tasks.put(id, stringToTask(arrayOfStrings));
-                        addNewPrioritizedTask(stringToTask(arrayOfStrings));
-                    } else if (Objects.equals(arrayOfStrings[1], String.valueOf(TaskType.EPIC))) {
-                        epics.put(id, stringToEpic(arrayOfStrings));
-                    } else if (Objects.equals(arrayOfStrings[1], String.valueOf(TaskType.SUBTASK))) {
-                        subtasks.put(id, stringToSubtask(arrayOfStrings));
-                        addNewPrioritizedTask(stringToSubtask(arrayOfStrings));
-                    }
+                String[] arrayOfStrings = list.get(i).split(",");
+                int id = Integer.parseInt(arrayOfStrings[0].trim());
+
+                if (id > maxId) {
+                    maxId = id;
                 }
-
-                for (Subtask value : subtasks.values()) {
-                    Epic epic = epics.get(value.getEpicId());
-                    if (epic != null) {
-                        epic.addSubTaskId(value.getId());
-                    }
+                if (Objects.equals(arrayOfStrings[1], String.valueOf(TaskType.TASK))) {
+                    tasks.put(id, stringToTask(arrayOfStrings));
+                    addNewPrioritizedTask(stringToTask(arrayOfStrings));
+                } else if (Objects.equals(arrayOfStrings[1], String.valueOf(TaskType.EPIC))) {
+                    epics.put(id, stringToEpic(arrayOfStrings));
+                } else if (Objects.equals(arrayOfStrings[1], String.valueOf(TaskType.SUBTASK))) {
+                    subtasks.put(id, stringToSubtask(arrayOfStrings));
+                    addNewPrioritizedTask(stringToSubtask(arrayOfStrings));
                 }
+            }
 
-                setId(maxId);
+            for (Subtask value : subtasks.values()) {
+                Epic epic = epics.get(value.getEpicId());
+                if (epic != null) {
+                    epic.addSubTaskId(value.getId());
+                }
+            }
 
-                String historyString = list.get(list.size() - 1);
+            setId(maxId);
 
-                for (Integer id : stringToListInteger(historyString)) {
-                    if (subtasks.containsKey(id)) {
-                        historyManager.add(subtasks.get(id));
-                    } else if (epics.containsKey(id)) {
-                        historyManager.add(epics.get(id));
-                    } else if (tasks.containsKey(id)) {
-                        historyManager.add(tasks.get(id));
-                    }
+            String historyString = list.get(list.size() - 1);
+            if (historyString.isEmpty()) return;
+
+            for (Integer id : stringToListInteger(historyString)) {
+                if (subtasks.containsKey(id)) {
+                    historyManager.add(subtasks.get(id));
+                } else if (epics.containsKey(id)) {
+                    historyManager.add(epics.get(id));
+                } else if (tasks.containsKey(id)) {
+                    historyManager.add(tasks.get(id));
                 }
             }
         }
@@ -107,8 +110,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public void createTask(Task task) {
-        super.createTask(task);
-        save();
+        if (super.validateTaskPriority(task)) {
+            super.createTask(task);
+            save();
+        }
+
     }
 
     @Override

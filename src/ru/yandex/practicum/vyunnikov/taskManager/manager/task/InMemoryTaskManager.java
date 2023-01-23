@@ -290,7 +290,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private boolean validateTaskPriority(Task taskToValidate) {
+    protected boolean validateTaskPriority(Task taskToValidate) {
         List<Task> tasks = getPrioritizedTasks();
 
         if (tasks.size() == 0) return true;
@@ -299,7 +299,8 @@ public class InMemoryTaskManager implements TaskManager {
             if ((taskToValidate.getStartTime().isBefore(task2.getEndTime())
                     && taskToValidate.getStartTime().isAfter(task2.getStartTime()))
                     || (taskToValidate.getEndTime().isBefore(task2.getEndTime())
-                    && taskToValidate.getEndTime().isAfter(task2.getStartTime()))) {
+                    && taskToValidate.getEndTime().isAfter(task2.getStartTime()))
+                    || taskToValidate.getStartTime().equals(task2.getStartTime())) {
                 System.out.println("Задачи\n" + taskToValidate + "\nи\n" + task2 + "\nпересекаются пересекаются по времени");
                 return false;
             }
