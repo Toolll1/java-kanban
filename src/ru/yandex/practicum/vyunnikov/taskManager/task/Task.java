@@ -2,7 +2,6 @@ package ru.yandex.practicum.vyunnikov.taskManager.task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
@@ -13,6 +12,11 @@ public class Task {
     protected LocalDateTime startTime;
     protected Duration duration;
 
+    public Task(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
+
     public Task(Status status, String title, String description, LocalDateTime startTime, Duration duration) {
         this.title = title;
         this.description = description;
@@ -21,11 +25,11 @@ public class Task {
         this.duration = duration;
     }
 
-    public Task(Status status, String title, String description, int Id, LocalDateTime startTime, Duration duration) {
+    public Task(Status status, String title, String description, int id, LocalDateTime startTime, Duration duration) {
         this.title = title;
         this.description = description;
         this.status = status;
-        this.id = Id;
+        this.id = id;
         this.startTime = startTime;
         this.duration = duration;
     }
@@ -87,8 +91,6 @@ public class Task {
         return startTime.plusMinutes(duration.toMinutes());
     }
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm:ss");
-
     public String durationConverter(Duration duration) {
         int MINUTES_PER_HOUR = 60;
         int MINUTES_PER_DAY = MINUTES_PER_HOUR * 24;
@@ -116,8 +118,8 @@ public class Task {
                 ", title='" + title + '\'' +
                 ", status=" + status +
                 ", deskription='" + description + '\'' +
-                ", startTime='" + startTime.format(formatter) + '\'' +
-                ", endTime='" + getEndTime().format(formatter) + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + getEndTime() + '\'' +
                 ", duration='" + durationConverter(duration) +
                 '}';
     }

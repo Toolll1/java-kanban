@@ -24,11 +24,10 @@ public class Main {
                 LocalDateTime.of(2023, 5, 1, 1, 0, 0), ofMinutes(5000)));
         taskManager.createTask(new Task(Status.NEW, "Task2", "описание2", 2,
                 LocalDateTime.of(2023, 1, 14, 15, 15, 0), ofMinutes(15)));
-        System.out.println(taskManager.getAllTask());
+
 
         HttpTaskServer server = new HttpTaskServer(file);
 
-       // System.out.println(taskManager.getAllTask());
 
     }
 }

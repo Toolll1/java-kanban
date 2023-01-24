@@ -65,9 +65,9 @@ public class Epic extends Task {
                 ", title='" + title + '\'' +
                 ", status=" + status +
                 ", description='" + description + '\'' +
-                ", startTime='" + startTime.format(formatter) + '\'' +
-                ", endTime='" + getEndTime().format(formatter) + '\'' +
-                ", duration='" + super.durationConverter(duration) +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + getEndTime() + '\'' +
+                ", duration='" + durationConverter(duration) +
                 '}';
     }
 }

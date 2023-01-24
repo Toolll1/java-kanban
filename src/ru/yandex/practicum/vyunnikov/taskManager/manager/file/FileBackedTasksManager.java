@@ -22,6 +22,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public void save() {
 
+        if (tasks.size() == 0 && epics.size() == 0 && subtasks.size() == 0) {
+            try {
+                new FileWriter(pathToFile, false).close();
+            } catch (IOException exception) {
+                System.out.println(exception.getMessage());
+            }
+        }
+
         if (tasks.size() > 0 || epics.size() > 0 || subtasks.size() > 0) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathToFile))) {
                 writer.write("id, тип, название, статус, описание, EpicId, startTime, duration");
@@ -60,7 +68,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 throw new ManagerSaveException("Произошла ошибка во время считывания информации из файла, но " +
                         "вы смогли увидеть моё собственное расчудесное непроверяемое исключение");
             }
+
             int lastLine = list.size() - 2;
+
             if (list.get(list.size() - 1).isEmpty()) lastLine = list.size() - 1;
 
             int maxId = 0;
@@ -72,6 +82,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 if (id > maxId) {
                     maxId = id;
                 }
+
                 if (Objects.equals(arrayOfStrings[1], String.valueOf(TaskType.TASK))) {
                     tasks.put(id, stringToTask(arrayOfStrings));
                     addNewPrioritizedTask(stringToTask(arrayOfStrings));
@@ -138,8 +149,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public void createEpic(Epic epic) {
-        super.createEpic(epic);
-        save();
+        if (super.validateTaskPriority(epic)) {
+            super.createEpic(epic);
+            save();
+        }
     }
 
     @Override
@@ -163,8 +176,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public void createSubtask(Subtask subtask) {
-        super.createSubtask(subtask);
-        save();
+        if (super.validateTaskPriority(subtask)) {
+            super.createSubtask(subtask);
+            save();
+        }
     }
 
 
