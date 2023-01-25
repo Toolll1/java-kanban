@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import ru.yandex.practicum.vyunnikov.taskManager.api.adapters.DurationAdapter;
+import ru.yandex.practicum.vyunnikov.taskManager.api.adapters.LocalDateAdapter;
 import ru.yandex.practicum.vyunnikov.taskManager.manager.Managers;
 import ru.yandex.practicum.vyunnikov.taskManager.manager.file.FileBackedTasksManager;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Epic;
@@ -29,6 +31,11 @@ public class HttpTaskServer {
             "но не может выполнить из-за того, что какой-то его аспект неверен.";
     private static FileBackedTasksManager taskManager;
 
+    private static final Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
+            .registerTypeAdapter(Duration.class, new DurationAdapter())
+            .create();
 
     public HttpTaskServer(File file) throws IOException {
         taskManager = Managers.getDefaultFileBackedTasksManager(file);
@@ -61,30 +68,11 @@ public class HttpTaskServer {
         }
     }
 
-    private void writeResponse(HttpExchange exchange,
-                               String responseString,
-                               int responseCode) throws IOException {
-        if (responseString.isBlank()) {
-            exchange.sendResponseHeaders(responseCode, 0);
-        } else {
-            byte[] bytes = responseString.getBytes(DEFAULT_CHARSET);
-            exchange.sendResponseHeaders(responseCode, bytes.length);
-            try (OutputStream os = exchange.getResponseBody()) {
-                os.write(bytes);
-            }
-        }
-        exchange.close();
-    }
-
     private void handleTask(HttpExchange exchange, String method, String body, String query) throws IOException {
 
         List<Task> allTasks = (List<Task>) taskManager.getAllTask();
 
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
-                .registerTypeAdapter(Duration.class, new DurationAdapter())
-                .create();
+
 
         switch (method) {
 
@@ -95,6 +83,7 @@ public class HttpTaskServer {
                     try {
                         id = Integer.parseInt(query.split("=")[1]);
                     } catch (NumberFormatException e) {
+                        e.printStackTrace();
                         writeResponse(exchange, "передано не число", 400);
                         return;
                     }
@@ -106,6 +95,7 @@ public class HttpTaskServer {
                         try {
                             postSerialized = gson.toJson(task);
                         } catch (Exception e) {
+                            e.printStackTrace();
                             writeResponse(exchange, badRequest, 400);
                         }
 
@@ -124,8 +114,8 @@ public class HttpTaskServer {
 
                 try {
                     task = gson.fromJson(body, Task.class);
-                } catch (Exception exception) {
-                    exception.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
                     writeResponse(exchange, badRequest, 400);
                 }
 
@@ -135,6 +125,7 @@ public class HttpTaskServer {
                     try {
                         id = Integer.parseInt(query.split("=")[1]);
                     } catch (NumberFormatException e) {
+                        e.printStackTrace();
                         writeResponse(exchange, "передано не число", 400);
                         return;
                     }
@@ -171,6 +162,7 @@ public class HttpTaskServer {
                     try {
                         id = Integer.parseInt(query.split("=")[1]);
                     } catch (NumberFormatException e) {
+                        e.printStackTrace();
                         writeResponse(exchange, "передано не число", 400);
                         return;
                     }
@@ -196,12 +188,6 @@ public class HttpTaskServer {
     private void handleSubtask(HttpExchange exchange, String method, String body, String query) throws IOException {
         List<Subtask> allSubtasks = (List<Subtask>) taskManager.getAllSubtask();
 
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
-                .registerTypeAdapter(Duration.class, new DurationAdapter())
-                .create();
-
         switch (method) {
             case "GET" -> {
                 if (query != null) {
@@ -210,6 +196,7 @@ public class HttpTaskServer {
                     try {
                         id = Integer.parseInt(query.split("=")[1]);
                     } catch (NumberFormatException e) {
+                        e.printStackTrace();
                         writeResponse(exchange, "передано не число", 400);
                         return;
                     }
@@ -221,6 +208,7 @@ public class HttpTaskServer {
                         try {
                             postSerialized = gson.toJson(subtask);
                         } catch (Exception e) {
+                            e.printStackTrace();
                             writeResponse(exchange, badRequest, 400);
                         }
 
@@ -239,8 +227,8 @@ public class HttpTaskServer {
 
                 try {
                     subtask = gson.fromJson(body, Subtask.class);
-                } catch (Exception exception) {
-                    exception.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
                     writeResponse(exchange, badRequest, 400);
                 }
 
@@ -250,6 +238,7 @@ public class HttpTaskServer {
                     try {
                         id = Integer.parseInt(query.split("=")[1]);
                     } catch (NumberFormatException e) {
+                        e.printStackTrace();
                         writeResponse(exchange, "передано не число", 400);
                         return;
                     }
@@ -285,6 +274,7 @@ public class HttpTaskServer {
                     try {
                         id = Integer.parseInt(query.split("=")[1]);
                     } catch (NumberFormatException e) {
+                        e.printStackTrace();
                         writeResponse(exchange, "передано не число", 400);
                         return;
                     }
@@ -309,12 +299,6 @@ public class HttpTaskServer {
     private void handleEpic(HttpExchange exchange, String method, String body, String query) throws IOException {
         List<Epic> allEpics = (List<Epic>) taskManager.getAllEpic();
 
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
-                .registerTypeAdapter(Duration.class, new DurationAdapter())
-                .create();
-
         switch (method) {
             case "GET" -> {
                 if (query != null) {
@@ -323,6 +307,7 @@ public class HttpTaskServer {
                     try {
                         id = Integer.parseInt(query.split("=")[1]);
                     } catch (NumberFormatException e) {
+                        e.printStackTrace();
                         writeResponse(exchange, "передано не число", 400);
                         return;
                     }
@@ -334,6 +319,7 @@ public class HttpTaskServer {
                         try {
                             postSerialized = gson.toJson(epic);
                         } catch (Exception e) {
+                            e.printStackTrace();
                             writeResponse(exchange, badRequest, 400);
                         }
 
@@ -352,8 +338,8 @@ public class HttpTaskServer {
 
                 try {
                     epic = gson.fromJson(body, Epic.class);
-                } catch (Exception exception) {
-                    exception.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
                     writeResponse(exchange, badRequest, 400);
                 }
 
@@ -363,6 +349,7 @@ public class HttpTaskServer {
                     try {
                         id = Integer.parseInt(query.split("=")[1]);
                     } catch (NumberFormatException e) {
+                        e.printStackTrace();
                         writeResponse(exchange, "передано не число", 400);
                         return;
                     }
@@ -401,6 +388,7 @@ public class HttpTaskServer {
                     try {
                         id = Integer.parseInt(query.split("=")[1]);
                     } catch (NumberFormatException e) {
+                        e.printStackTrace();
                         writeResponse(exchange, "передано не число", 400);
                         return;
                     }
@@ -420,5 +408,20 @@ public class HttpTaskServer {
             default -> writeResponse(exchange, "Обработка метода "
                     + method + " не настроена", 400);
         }
+    }
+
+    private void writeResponse(HttpExchange exchange,
+                               String responseString,
+                               int responseCode) throws IOException {
+        if (responseString.isBlank()) {
+            exchange.sendResponseHeaders(responseCode, 0);
+        } else {
+            byte[] bytes = responseString.getBytes(DEFAULT_CHARSET);
+            exchange.sendResponseHeaders(responseCode, bytes.length);
+            try (OutputStream os = exchange.getResponseBody()) {
+                os.write(bytes);
+            }
+        }
+        exchange.close();
     }
 }

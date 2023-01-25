@@ -236,16 +236,5 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super.deleteAllEpics();
         save();
     }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FileBackedTasksManager that = (FileBackedTasksManager) o;
-        return true;
-    }
 
-    @Override
-    public int hashCode() {
-        return 1;
-    }
 }

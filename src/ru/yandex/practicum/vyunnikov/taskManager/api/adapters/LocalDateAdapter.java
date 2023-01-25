@@ -1,4 +1,4 @@
-package ru.yandex.practicum.vyunnikov.taskManager.api;
+package ru.yandex.practicum.vyunnikov.taskManager.api.adapters;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-class LocalDateAdapter extends TypeAdapter<LocalDateTime> {
+public class LocalDateAdapter extends TypeAdapter<LocalDateTime> {
 
     @Override
     public void write(JsonWriter jsonWriter, LocalDateTime localDateTime) throws IOException {
