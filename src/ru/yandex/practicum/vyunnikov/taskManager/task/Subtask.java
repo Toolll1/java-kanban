@@ -28,12 +28,13 @@ public class Subtask extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Subtask subtask = (Subtask) o;
-        return Objects.equals(epicId, subtask.epicId);
+        return Objects.equals(title, subtask.title) && Objects.equals(description, subtask.description)
+                && status == subtask.status && Objects.equals(id, subtask.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), epicId);
+        return Objects.hash(title, description, status, id);
     }
 
     @Override

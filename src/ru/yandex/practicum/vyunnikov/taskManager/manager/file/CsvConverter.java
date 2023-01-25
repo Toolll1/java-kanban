@@ -36,7 +36,6 @@ public class CsvConverter {
         return sb.toString();
     }
 
-
     public static Task stringToTask(String[] arrayOfStrings) {
         int id = Integer.parseInt(arrayOfStrings[0].trim());
         String title = arrayOfStrings[2];

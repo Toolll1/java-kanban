@@ -84,10 +84,11 @@ public class Task {
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, description, status, id, startTime, duration);
+        return Objects.hash(title, description, status, id);
     }
 
     public LocalDateTime getEndTime() {
+
         return startTime.plusMinutes(duration.toMinutes());
     }
 

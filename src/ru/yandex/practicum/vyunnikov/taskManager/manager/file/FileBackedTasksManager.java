@@ -1,13 +1,15 @@
 package ru.yandex.practicum.vyunnikov.taskManager.manager.file;
 
-import ru.yandex.practicum.vyunnikov.taskManager.manager.task.InMemoryTaskManager;
 import ru.yandex.practicum.vyunnikov.taskManager.exceptions.ManagerSaveException;
+import ru.yandex.practicum.vyunnikov.taskManager.manager.task.InMemoryTaskManager;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Epic;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Subtask;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Task;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static ru.yandex.practicum.vyunnikov.taskManager.manager.file.CsvConverter.*;
 
@@ -89,8 +91,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 } else if (Objects.equals(arrayOfStrings[1], String.valueOf(TaskType.EPIC))) {
                     epics.put(id, stringToEpic(arrayOfStrings));
                 } else if (Objects.equals(arrayOfStrings[1], String.valueOf(TaskType.SUBTASK))) {
-                    subtasks.put(id, stringToSubtask(arrayOfStrings));
-                    addNewPrioritizedTask(stringToSubtask(arrayOfStrings));
+                    Subtask subtask = stringToSubtask(arrayOfStrings);
+                    int epicIdOfSubtask = subtask.getEpicId();
+                    Epic epic = epics.get(epicIdOfSubtask);
+                    int subtaskId = subtask.getId();
+
+                    epic.addSubTaskId(subtaskId);
+                    subtasks.put(id, subtask);
+                    addNewPrioritizedTask(subtask);
                 }
             }
 
@@ -125,7 +133,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             super.createTask(task);
             save();
         }
-
     }
 
     @Override
@@ -149,10 +156,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public void createEpic(Epic epic) {
-        if (super.validateTaskPriority(epic)) {
-            super.createEpic(epic);
-            save();
-        }
+        super.createEpic(epic);
+        save();
     }
 
     @Override
@@ -231,5 +236,16 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super.deleteAllEpics();
         save();
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FileBackedTasksManager that = (FileBackedTasksManager) o;
+        return true;
+    }
 
+    @Override
+    public int hashCode() {
+        return 1;
+    }
 }

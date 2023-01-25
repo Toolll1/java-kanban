@@ -109,7 +109,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteEpic(int epicId) {
         Epic epic = epics.get(epicId);
-        if (epic != null) {
+        if (epic != null && epic.getSubtaskIds() != null) {
             for (Integer subtaskId : epic.getSubtaskIds()) {
                 prioritizedTasks.removeIf(task -> Objects.equals(task.getId(), subtaskId));
                 subtasks.remove(subtaskId);
@@ -249,9 +249,11 @@ public class InMemoryTaskManager implements TaskManager {
         for (Epic epic : epics.values()) {
             for (int subtaskId : epic.getSubtaskIds()) {
                 Subtask subtask = subtasks.get(subtaskId);
-                prioritizedTasks.remove(subtask);
+                if (subtask != null) continue;
                 subtasks.remove(subtaskId);
                 historyManager.remove(subtaskId);
+                prioritizedTasks.remove(subtask);
+
             }
             subtasks.clear();
             epic.getSubtaskIds().clear();
@@ -266,7 +268,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void updateEpicStatus(Epic epic) {
+        if (epic.getSubtaskIds() == null) return;
+
         ArrayList<Subtask> listOfSubtasks = new ArrayList<>();
+
         for (int i = 0; i < epic.getSubtaskIds().size(); i++) {
             ArrayList<Integer> x = epic.getSubtaskIds();
             listOfSubtasks.add(subtasks.get(x.get(i)));
@@ -293,20 +298,20 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected boolean validateTaskPriority(Task taskToValidate) {
         List<Task> tasks = getPrioritizedTasks();
-
         if (tasks.size() == 0) return true;
 
-        for (Task task2 : tasks) {
-            if ((taskToValidate.getStartTime().isBefore(task2.getEndTime())
-                    && taskToValidate.getStartTime().isAfter(task2.getStartTime()))
-                    || (taskToValidate.getEndTime().isBefore(task2.getEndTime())
-                    && taskToValidate.getEndTime().isAfter(task2.getStartTime()))
-                    || taskToValidate.getStartTime().equals(task2.getStartTime())) {
-                System.out.println("Задачи\n" + taskToValidate + "\nи\n" + task2 + "\nпересекаются пересекаются по времени");
+        for (Task task : tasks) {
+
+            if ((taskToValidate.getStartTime().isBefore(task.getEndTime())
+                    && taskToValidate.getStartTime().isAfter(task.getStartTime()))
+                    || (taskToValidate.getEndTime().isBefore(task.getEndTime())
+                    && taskToValidate.getEndTime().isAfter(task.getStartTime()))
+                    || taskToValidate.getStartTime().equals(task.getStartTime())) {
+
+                System.out.println("Задачи\n" + taskToValidate + "\nи\n" + task + "\nпересекаются пересекаются по времени");
                 return false;
             }
         }
-
         return true;
     }
 
@@ -322,6 +327,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void updateEpicTime(Epic epic) {
+        if (epic.getSubtaskIds() == null) return;
+
         List<Subtask> subtasks = getSubtasksByEpicId(epic.getId());
         subtasks.sort(taskComparator);
 

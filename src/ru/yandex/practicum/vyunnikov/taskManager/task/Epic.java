@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Epic extends Task {
 
-    private final ArrayList<Integer> subtaskIds = new ArrayList<>();
+    private ArrayList<Integer> subtaskIds = new ArrayList<>();
 
     private LocalDateTime endTime;
 
@@ -34,10 +34,13 @@ public class Epic extends Task {
         subtaskIds.add(id);
     }
 
+    public void setSubtaskIds(ArrayList<Integer> subtaskIds) {
+        this.subtaskIds = subtaskIds;
+    }
+
     public ArrayList<Integer> getSubtaskIds() {
         return subtaskIds;
     }
-
 
     public void removeSubTaskId(int subtaskId) {
         subtaskIds.remove(subtaskId);
@@ -49,12 +52,13 @@ public class Epic extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Epic epic = (Epic) o;
-        return Objects.equals(subtaskIds, epic.subtaskIds);
+        return Objects.equals(title, epic.title) && Objects.equals(description, epic.description)
+                && status == epic.status && Objects.equals(id, epic.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), subtaskIds);
+        return Objects.hash(title, description, status, id);
     }
 
     @Override
