@@ -1,11 +1,11 @@
-package ru.yandex.practicum.vyunnikov.taskManager.manager.file;
+package ru.yandex.practicum.vyunnikov.taskManager.managers.file;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.vyunnikov.taskManager.manager.task.InMemoryTaskManager;
-import ru.yandex.practicum.vyunnikov.taskManager.manager.task.TaskManagerTest;
+import ru.yandex.practicum.vyunnikov.taskManager.managers.task.InMemoryTaskManager;
+import ru.yandex.practicum.vyunnikov.taskManager.managers.task.TaskManagerTest;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Epic;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Status;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Task;
@@ -84,7 +84,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    public void aveAndLoadFromFile_emptyHistory_ifThereAreNoCreatedTasks() {
+    public void saveAndLoadFromFile_emptyHistory_ifThereAreNoCreatedTasks() {
         FileBackedTasksManager fileManager = new FileBackedTasksManager(file);
         fileManager.save();
         fileManager.loadFromFile(file);

@@ -1,7 +1,7 @@
-package ru.yandex.practicum.vyunnikov.taskManager.manager.history;
+package ru.yandex.practicum.vyunnikov.taskManager.managers.history;
 
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.vyunnikov.taskManager.manager.Managers;
+import ru.yandex.practicum.vyunnikov.taskManager.managers.Managers;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Status;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Task;
 

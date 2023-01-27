@@ -1,7 +1,7 @@
-package ru.yandex.practicum.vyunnikov.taskManager.manager.file;
+package ru.yandex.practicum.vyunnikov.taskManager.managers.file;
 
 import ru.yandex.practicum.vyunnikov.taskManager.exceptions.ManagerSaveException;
-import ru.yandex.practicum.vyunnikov.taskManager.manager.task.InMemoryTaskManager;
+import ru.yandex.practicum.vyunnikov.taskManager.managers.task.InMemoryTaskManager;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Epic;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Subtask;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Task;
@@ -11,15 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static ru.yandex.practicum.vyunnikov.taskManager.manager.file.CsvConverter.*;
+import static ru.yandex.practicum.vyunnikov.taskManager.managers.file.CsvConverter.*;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
-    private final String pathToFile;
+    private String pathToFile = "";
 
     public FileBackedTasksManager(File file) {
-        pathToFile = file.toString();
-        loadFromFile(file);
+      if (file != null) {
+          pathToFile = file.toString();
+          loadFromFile(file);
+      }
+
     }
 
     public void save() {
@@ -124,7 +127,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 }
             }
         }
-
     }
 
     @Override

@@ -1,7 +1,7 @@
-package ru.yandex.practicum.vyunnikov.taskManager.manager.task;
+package ru.yandex.practicum.vyunnikov.taskManager.managers.task;
 
-import ru.yandex.practicum.vyunnikov.taskManager.manager.history.HistoryManager;
-import ru.yandex.practicum.vyunnikov.taskManager.manager.Managers;
+import ru.yandex.practicum.vyunnikov.taskManager.managers.history.HistoryManager;
+import ru.yandex.practicum.vyunnikov.taskManager.managers.Managers;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Epic;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Status;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Subtask;

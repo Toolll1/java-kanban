@@ -1,23 +1,19 @@
 package ru.yandex.practicum.vyunnikov.taskManager;
 
-import ru.yandex.practicum.vyunnikov.taskManager.api.HttpTaskServer;
-import ru.yandex.practicum.vyunnikov.taskManager.manager.Managers;
-import ru.yandex.practicum.vyunnikov.taskManager.manager.file.FileBackedTasksManager;
-import ru.yandex.practicum.vyunnikov.taskManager.task.Epic;
-import ru.yandex.practicum.vyunnikov.taskManager.task.Status;
-import ru.yandex.practicum.vyunnikov.taskManager.task.Subtask;
-import ru.yandex.practicum.vyunnikov.taskManager.task.Task;
+import ru.yandex.practicum.vyunnikov.taskManager.servers.HttpTaskServer;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.time.LocalDateTime;
-
-import static java.time.Duration.ofMinutes;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        File file = Path.of("src", "ru", "yandex", "practicum", "vyunnikov",
+
+      //  String url = "http://localhost:8078/";
+
+       // new KVServer().start();
+        HttpTaskServer server = new HttpTaskServer("http://localhost:8078/");
+
+        // HttpTaskManager taskManager = Managers.getDefaultHttpTaskManager("http://localhost:8078/");
+/*        File file = Path.of("src", "ru", "yandex", "practicum", "vyunnikov",
                 "taskManager", "task", "file.csv").toFile();
 
         FileBackedTasksManager taskManager = Managers.getDefaultFileBackedTasksManager(file);
@@ -35,6 +31,11 @@ public class Main {
         taskManager.createSubtask(new Subtask(Status.NEW, "Subtask1.1", "описание1", 3,
                 LocalDateTime.of(2020, 1, 14, 15, 30, 0), ofMinutes(5)));
 
-        HttpTaskServer server = new HttpTaskServer(file);
+        taskManager.getTask(1);
+        taskManager.getEpic(3);
+
+        System.out.println("История" + taskManager.getHistory());
+
+        HttpTaskServer server = new HttpTaskServer(file);*/
     }
 }

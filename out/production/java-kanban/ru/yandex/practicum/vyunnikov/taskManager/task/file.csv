@@ -1,7 +1,0 @@
-id, тип, название, статус, описание, EpicId, startTime, duration
-1,TASK,Task1,NEW,описание1,2023-05-01T01:00,PT83H20M
-2,TASK,Task2,NEW,описание2,2023-01-14T15:15,PT15M
-3,EPIC,Epic1,NEW,описание1,2020-01-14T15:30,PT10M
-4,SUBTASK,Subtask1.1,NEW,описание1,3,2023-01-14T15:30,PT5M
-5,SUBTASK,Subtask1.1,NEW,описание1,3,2020-01-14T15:30,PT5M
-

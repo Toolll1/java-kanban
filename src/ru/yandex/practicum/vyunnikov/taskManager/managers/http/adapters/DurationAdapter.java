@@ -1,4 +1,4 @@
-package ru.yandex.practicum.vyunnikov.taskManager.api.adapters;
+package ru.yandex.practicum.vyunnikov.taskManager.managers.http.adapters;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

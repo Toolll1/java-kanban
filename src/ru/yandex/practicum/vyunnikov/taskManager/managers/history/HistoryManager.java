@@ -1,4 +1,4 @@
-package ru.yandex.practicum.vyunnikov.taskManager.manager.history;
+package ru.yandex.practicum.vyunnikov.taskManager.managers.history;
 
 import ru.yandex.practicum.vyunnikov.taskManager.task.Task;
 

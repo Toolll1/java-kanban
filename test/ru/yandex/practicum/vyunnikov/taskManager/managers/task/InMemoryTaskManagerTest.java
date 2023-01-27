@@ -1,4 +1,4 @@
-package ru.yandex.practicum.vyunnikov.taskManager.manager.task;
+package ru.yandex.practicum.vyunnikov.taskManager.managers.task;
 
 import org.junit.jupiter.api.BeforeEach;
 

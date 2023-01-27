@@ -1,19 +1,18 @@
-package ru.yandex.practicum.vyunnikov.taskManager.api;
+package ru.yandex.practicum.vyunnikov.taskManager.servers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import ru.yandex.practicum.vyunnikov.taskManager.api.adapters.DurationAdapter;
-import ru.yandex.practicum.vyunnikov.taskManager.api.adapters.LocalDateAdapter;
-import ru.yandex.practicum.vyunnikov.taskManager.manager.Managers;
-import ru.yandex.practicum.vyunnikov.taskManager.manager.file.FileBackedTasksManager;
+import ru.yandex.practicum.vyunnikov.taskManager.managers.http.adapters.DurationAdapter;
+import ru.yandex.practicum.vyunnikov.taskManager.managers.http.adapters.LocalDateAdapter;
+import ru.yandex.practicum.vyunnikov.taskManager.managers.Managers;
+import ru.yandex.practicum.vyunnikov.taskManager.managers.http.HttpTaskManager;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Epic;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Subtask;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Task;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,23 +28,31 @@ public class HttpTaskServer {
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private static final String badRequest = "Сервер не понимает запрос или пытается его обработать, " +
             "но не может выполнить из-за того, что какой-то его аспект неверен.";
-    private static FileBackedTasksManager taskManager;
-
+    private static HttpTaskManager taskManager;
+    HttpServer httpServer;
     private static final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
             .registerTypeAdapter(Duration.class, new DurationAdapter())
             .create();
 
-    public HttpTaskServer(File file) throws IOException {
-        taskManager = Managers.getDefaultFileBackedTasksManager(file);
-        HttpServer httpServer = HttpServer.create();
+    public HttpTaskServer(String url) throws IOException {
+        taskManager = Managers.getDefaultHttpTaskManager(url);
+        httpServer = HttpServer.create();
 
         httpServer.bind(new InetSocketAddress(PORT), 0);
         httpServer.createContext("/tasks", new PostsHandler());
-        httpServer.start(); // запускаем сервер
+        start();
+    }
 
+    public void start() {
+        httpServer.start();
         System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
+    }
+
+    public void stop() {
+        httpServer.stop(0);
+        System.out.println("Остановили сервер на порту " + PORT);
     }
 
     class PostsHandler implements HttpHandler {
@@ -63,16 +70,26 @@ public class HttpTaskServer {
                 case "task" -> handleTask(exchange, method, body, query);
                 case "subtask" -> handleSubtask(exchange, method, body, query);
                 case "epic" -> handleEpic(exchange, method, body, query);
+                case "history" -> handleHistory(exchange, method);
                 default -> writeResponse(exchange, "Такого эндпоинта не существует", 404);
             }
+        }
+    }
+
+    private void handleHistory(HttpExchange exchange, String method) throws IOException {
+
+        if (method.equals("GET")) {
+            String response = gson.toJson(taskManager.getHistory());
+            writeResponse(exchange, response, 200);
+        } else {
+            writeResponse(exchange, "Обработка метода "
+                    + method + " не настроена", 400);
         }
     }
 
     private void handleTask(HttpExchange exchange, String method, String body, String query) throws IOException {
 
         List<Task> allTasks = (List<Task>) taskManager.getAllTask();
-
-
 
         switch (method) {
 
@@ -145,11 +162,11 @@ public class HttpTaskServer {
                 } else {
                     if (task.getId() != null) {
                         taskManager.createTask(task);
-                        writeResponse(exchange, "задача успешно добавлена. Id задачи изменен на "
-                                + task.getId(), 200);
+                        writeResponse(exchange, "задача была добавлена, если не пересеклась с другой. " +
+                                "Id задачи изменен на " + task.getId(), 200);
                     } else {
                         taskManager.createTask(task);
-                        writeResponse(exchange, "задача успешно добавлена.", 200);
+                        writeResponse(exchange, "задача была добавлена, если не пересеклась с другой.", 200);
                     }
                 }
             }
@@ -258,11 +275,11 @@ public class HttpTaskServer {
                 } else {
                     if (subtask.getId() != null) {
                         taskManager.createSubtask(subtask);
-                        writeResponse(exchange, "подзадача успешно добавлена. Id задачи изменен на "
-                                + subtask.getId(), 200);
+                        writeResponse(exchange, "подзадача была добавлена, если не пересеклась с другой." +
+                                " Id задачи изменен на " + subtask.getId(), 200);
                     } else {
                         taskManager.createSubtask(subtask);
-                        writeResponse(exchange, "подзадача успешно добавлена.", 200);
+                        writeResponse(exchange, "подзадача была добавлена, если не пересеклась с другой.", 200);
                     }
                 }
             }
