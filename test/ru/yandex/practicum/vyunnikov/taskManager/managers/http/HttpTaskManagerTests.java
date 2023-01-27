@@ -65,6 +65,7 @@ public class HttpTaskManagerTests {
         Assertions.assertEquals(Collections.EMPTY_LIST, taskManager.getAllEpic());
         Assertions.assertEquals(Collections.EMPTY_LIST, taskManager.getAllSubtask());
     }
+
     @Test
     public void saveAndLoadHistoryFromServer_allAddedTasksWillLoadCorrectly_underNormalConditions() throws IOException {
         Task task = new Task(Status.NEW, "Task1", "описание1",
@@ -77,10 +78,10 @@ public class HttpTaskManagerTests {
         assertEquals(task.getStatus(), task1.getStatus(), "Статусы задач не совпадают.");
         assertEquals(task.getStartTime(), task1.getStartTime(), "Время начала задач не совпадает.");
         assertEquals(task.getEndTime(), task1.getEndTime(), "Время окончания задач не совпадает.");
-        
+
     }
-    
-    
+
+
     @Test
     public void saveAndLoadFromServer_allAddedTasksWillLoadCorrectly_underNormalConditions() throws IOException {
 
@@ -91,9 +92,9 @@ public class HttpTaskManagerTests {
         Subtask subtask = new Subtask(Status.NEW, "Subtask1.1", "описание1", 2,
                 LocalDateTime.of(2023, 1, 14, 15, 30, 0), ofMinutes(5));
 
-        Task task1 = uploadingATaskToTheServerAndDownloadingAfterRestarting (task);
-        Epic epic1 = uploadingAEpicToTheServerAndDownloadingAfterRestarting (epic);
-        Subtask subtask1 = uploadingSubtaskToTheServerAndDownloadingAfterRestarting (subtask);
+        Task task1 = uploadingATaskToTheServerAndDownloadingAfterRestarting(task);
+        Epic epic1 = uploadingAEpicToTheServerAndDownloadingAfterRestarting(epic);
+        Subtask subtask1 = uploadingSubtaskToTheServerAndDownloadingAfterRestarting(subtask);
 
         assertEquals(task.getTitle(), task1.getTitle(), "Названия задач не совпадают.");
         assertEquals(task.getDescription(), task1.getDescription(), "Описания задач не совпадают.");

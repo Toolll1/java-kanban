@@ -16,7 +16,7 @@ public class KVTaskClient {
         apiToken = registration(url);
     }
 
-    public void put (String key, String json) {
+    public void put(String key, String json) {
 
         try {
             HttpClient client = HttpClient.newHttpClient();
@@ -36,7 +36,7 @@ public class KVTaskClient {
 
     public String load(String key) {
         try {
-            HttpClient client  = HttpClient.newHttpClient();
+            HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .GET()
                     .uri(URI.create(url + "load/" + key + "?API_TOKEN=" + apiToken))
@@ -44,7 +44,7 @@ public class KVTaskClient {
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
             return response.body();
-        }  catch (IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             System.out.println("вероятно, КВ сервер не запущен");
             e.printStackTrace();
         }
@@ -53,7 +53,7 @@ public class KVTaskClient {
 
     public String registration(String url) {
         try {
-            HttpClient client  = HttpClient.newHttpClient();
+            HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest
                     .newBuilder()
                     .GET()
