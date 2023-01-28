@@ -22,11 +22,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
           pathToFile = file.toString();
           loadFromFile(file);
       }
-
     }
 
     public void save() {
-
         if (tasks.size() == 0 && epics.size() == 0 && subtasks.size() == 0) {
             try {
                 new FileWriter(pathToFile, false).close();
@@ -138,7 +136,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void updateTask(Task task) {
+    public void updateTask(Task task){
         super.updateTask(task);
         save();
     }
@@ -238,5 +236,4 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super.deleteAllEpics();
         save();
     }
-
 }

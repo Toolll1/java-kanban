@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class InMemoryHistoryManagerTest {
-    HistoryManager historyManager = Managers.getDefaultHistory();
+    HistoryManager historyManager = Managers.getHistory();
 
     @Test
     public void remove_theTaskWithTheCorrectIdWillBeDeleted_ifRemoveTaskAndNonExistentTask() {

@@ -26,6 +26,126 @@ class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     File file = Path.of("src", "ru", "yandex", "practicum", "vyunnikov",
             "taskManager", "task", "file.csv").toFile();
 
+    @Override
+    public void getHistory_returnsTheCorrectTaskList_AfterCallingTheMethodGetTask() {
+        super.getHistory_returnsTheCorrectTaskList_AfterCallingTheMethodGetTask();
+    }
+
+    @Override
+    public void updateTask_statusToInProgress_whenAdjustingTheTaskStatus() {
+        super.updateTask_statusToInProgress_whenAdjustingTheTaskStatus();
+    }
+
+    @Override
+    public void updateEpic_statusToInProgress_whenAdjustingTheEpicStatus() {
+        super.updateEpic_statusToInProgress_whenAdjustingTheEpicStatus();
+    }
+
+    @Override
+    public void updateSubtask_statusToInProgress_whenAdjustingTheSubtaskStatus() {
+        super.updateSubtask_statusToInProgress_whenAdjustingTheSubtaskStatus();
+    }
+
+    @Override
+    public void updateTask_statusToInDone_whenAdjustingTheTaskStatus() {
+        super.updateTask_statusToInDone_whenAdjustingTheTaskStatus();
+    }
+
+    @Override
+    public void updateEpic_statusToInDone_whenAdjustingTheEpicStatus() {
+        super.updateEpic_statusToInDone_whenAdjustingTheEpicStatus();
+    }
+
+    @Override
+    public void updateSubtask_statusToInDone_whenAdjustingTheSubtaskStatus() {
+        super.updateSubtask_statusToInDone_whenAdjustingTheSubtaskStatus();
+    }
+
+    @Override
+    public void createEpic_statusNew_withAnEmptyListOfSubtasks() {
+        super.createEpic_statusNew_withAnEmptyListOfSubtasks();
+    }
+
+    @Override
+    public void createEpic_statusNew_ForAllSubtasksWithTheNewStatus() {
+        super.createEpic_statusNew_ForAllSubtasksWithTheNewStatus();
+    }
+
+    @Override
+    public void createEpic_statusDone_ForAllSubtasksWithTheDoneStatus() {
+        super.createEpic_statusDone_ForAllSubtasksWithTheDoneStatus();
+    }
+
+    @Override
+    public void createEpic_statusInProgress_ForAllSubtasksWithNewAndDoneStatuses() {
+        super.createEpic_statusInProgress_ForAllSubtasksWithNewAndDoneStatuses();
+    }
+
+    @Override
+    public void createEpic_statusInProgress_ForAllSubtasksWithNewAndDoneAndIiProgressStatuses() {
+        super.createEpic_statusInProgress_ForAllSubtasksWithNewAndDoneAndIiProgressStatuses();
+    }
+
+    @Override
+    public void updateTask_notUpdate_taskIfNull() {
+        super.updateTask_notUpdate_taskIfNull();
+    }
+
+    @Override
+    public void updateEpic_notUpdate_epicIfNull() {
+        super.updateEpic_notUpdate_epicIfNull();
+    }
+
+    @Override
+    public void updateSubtask_notUpdate_subtaskIfNull() {
+        super.updateSubtask_notUpdate_subtaskIfNull();
+    }
+
+    @Override
+    public void deleteAllTask_listOfTaskIsEmpty_ifDeleteAllTheTasks() {
+        super.deleteAllTask_listOfTaskIsEmpty_ifDeleteAllTheTasks();
+    }
+
+    @Override
+    public void deleteAllEpics_listOfEpicIsEmpty_ifDeleteAllTheEpics() {
+        super.deleteAllEpics_listOfEpicIsEmpty_ifDeleteAllTheEpics();
+    }
+
+    @Override
+    public void deleteAllSubtasks_listOfSubtaskIsEmpty_ifDeleteAllTheSubtask() {
+        super.deleteAllSubtasks_listOfSubtaskIsEmpty_ifDeleteAllTheSubtask();
+    }
+
+    @Override
+    public void deleteSubtask_listOfSubtaskIsEmpty_ifDeleteTheSubtaskById() {
+        super.deleteSubtask_listOfSubtaskIsEmpty_ifDeleteTheSubtaskById();
+    }
+
+    @Override
+    public void deleteTask_listOfTaskIsEmpty_ifDeleteTheTaskById() {
+        super.deleteTask_listOfTaskIsEmpty_ifDeleteTheTaskById();
+    }
+
+    @Override
+    public void deleteEpic_listOfEpicIsEmpty_ifDeleteTheEpicById() {
+        super.deleteEpic_listOfEpicIsEmpty_ifDeleteTheEpicById();
+    }
+
+    @Override
+    public void deleteTask_notDeleteTask_IfBadId() {
+        super.deleteTask_notDeleteTask_IfBadId();
+    }
+
+    @Override
+    public void deleteEpic_notDeleteEpic_IfBadId() {
+        super.deleteEpic_notDeleteEpic_IfBadId();
+    }
+
+    @Override
+    public void deleteSubtask_notDeleteSubtask_IfBadId() {
+        super.deleteSubtask_notDeleteSubtask_IfBadId();
+    }
+
     @BeforeEach
     public void beforeEach() {
         manager = new FileBackedTasksManager(file);
@@ -41,7 +161,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    public void saveAndLoadFromFile_allAddedTasksWillLoadCorrectly_underNormalConditions() {
+    public void saveAndLoadFromFile_allAddedTasksWillLoadCorrectly_underNormalConditions(){
         Task task = new Task(Status.NEW, "Task1", "описание1",
                 LocalDateTime.of(2023, 5, 1, 1, 0, 0), ofMinutes(5000));
         manager.createTask(task);

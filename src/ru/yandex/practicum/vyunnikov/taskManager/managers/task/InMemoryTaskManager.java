@@ -1,12 +1,12 @@
 package ru.yandex.practicum.vyunnikov.taskManager.managers.task;
 
-import ru.yandex.practicum.vyunnikov.taskManager.managers.history.HistoryManager;
+import ru.yandex.practicum.vyunnikov.taskManager.exceptions.ValidateException;
 import ru.yandex.practicum.vyunnikov.taskManager.managers.Managers;
+import ru.yandex.practicum.vyunnikov.taskManager.managers.history.HistoryManager;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Epic;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Status;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Subtask;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Task;
-
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected HashMap<Integer, Task> tasks = new HashMap<>(); //+
     protected HashMap<Integer, Epic> epics = new HashMap<>();
     protected HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    protected HistoryManager historyManager = Managers.getDefaultHistory();
+    protected HistoryManager historyManager = Managers.getHistory();
     private final Comparator<Task> taskComparator = Comparator.comparing(Task::getStartTime);
     protected Set<Task> prioritizedTasks = new TreeSet<>(taskComparator);
 
@@ -37,7 +37,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void createTask(Task task) {
+    public void createTask(Task task)  {
         if (validateTaskPriority(task)) {
             task.setId(newId());
             addNewPrioritizedTask(task);
@@ -277,6 +277,8 @@ public class InMemoryTaskManager implements TaskManager {
             listOfSubtasks.add(subtasks.get(x.get(i)));
         }
 
+        if (listOfSubtasks.isEmpty()) return;
+
         int statusDone = 0;
         int statusNew = 0;
 
@@ -296,7 +298,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    protected boolean validateTaskPriority(Task taskToValidate) {
+    protected boolean validateTaskPriority(Task taskToValidate) throws ValidateException {
         List<Task> tasks = getPrioritizedTasks();
         if (tasks.size() == 0) return true;
 
@@ -308,8 +310,7 @@ public class InMemoryTaskManager implements TaskManager {
                     && taskToValidate.getEndTime().isAfter(task.getStartTime()))
                     || taskToValidate.getStartTime().equals(task.getStartTime())) {
 
-                System.out.println("Задачи\n" + taskToValidate + "\nи\n" + task + "\nпересекаются пересекаются по времени");
-                return false;
+                throw new ValidateException("Задачи\n" + taskToValidate + "\nи\n" + task + "\nпересекаются пересекаются по времени");
             }
         }
         return true;
@@ -343,9 +344,9 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setEndTime(startTime.plusMinutes(duration.toMinutes()));
             epic.setDuration(duration);
         } else {
-            epic.setStartTime(null);
+            epic.setStartTime(epic.getStartTime());
             epic.setEndTime(null);
-            epic.setDuration(null);
+            epic.setDuration(epic.getDuration());
         }
     }
 }

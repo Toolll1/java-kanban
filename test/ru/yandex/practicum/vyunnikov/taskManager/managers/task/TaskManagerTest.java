@@ -6,6 +6,7 @@ import ru.yandex.practicum.vyunnikov.taskManager.task.Status;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Subtask;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Task;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -35,7 +36,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
 
     @Test
-    public void getHistory_returnsTheCorrectTaskList_AfterCallingTheMethodGetTask() {
+    public void getHistory_returnsTheCorrectTaskList_AfterCallingTheMethodGetTask()  {
 
         Task task = createTask();
 
@@ -46,7 +47,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void createTask_setNewId_existIdInObject() {
+    public void createTask_setNewId_existIdInObject() throws IOException {
         Task task = createTask();
         manager.createTask(task);
 
@@ -69,7 +70,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void createEpic_setNewId_existIdInObject() {
+    public void createEpic_setNewId_existIdInObject() throws IOException {
         Epic epic = createEpic();
         manager.createEpic(epic);
 
@@ -92,7 +93,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void createSubtask_setNewId_existIdInObject() {
+    public void createSubtask_setNewId_existIdInObject() throws IOException {
         Epic epic = createEpic();
         manager.createEpic(epic);
         Subtask subtask = createSubtask(epic);
@@ -118,7 +119,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void updateTask_statusToInProgress_whenAdjustingTheTaskStatus() {
+    public void updateTask_statusToInProgress_whenAdjustingTheTaskStatus()  {
         Task task = createTask();
         manager.createTask(task);
         task.setStatus(Status.IN_PROGRESS);

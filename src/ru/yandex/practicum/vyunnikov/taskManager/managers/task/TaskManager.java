@@ -1,5 +1,6 @@
 package ru.yandex.practicum.vyunnikov.taskManager.managers.task;
 
+
 import ru.yandex.practicum.vyunnikov.taskManager.task.Epic;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Subtask;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Task;
@@ -14,9 +15,9 @@ public interface TaskManager {
 
     List<Task> getHistory();
 
-    public void createTask(Task task);
+    public void createTask(Task task) ;
 
-    public void updateTask(Task task);
+    public void updateTask(Task task) ;
 
     public Task getTask(int taskId);
 
@@ -32,7 +33,7 @@ public interface TaskManager {
 
     public void createSubtask(Subtask subtask);
 
-    public void updateSubtask(Subtask subtask);
+    public void updateSubtask(Subtask subtask) ;
 
     Subtask getSubtask(int subtaskId);
 
