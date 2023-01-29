@@ -6,14 +6,12 @@ import ru.yandex.practicum.vyunnikov.taskManager.task.Status;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Subtask;
 import ru.yandex.practicum.vyunnikov.taskManager.task.Task;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
     protected T manager;
@@ -36,7 +34,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
 
     @Test
-    public void getHistory_returnsTheCorrectTaskList_AfterCallingTheMethodGetTask()  {
+    public void getHistory_returnsTheCorrectTaskList_AfterCallingTheMethodGetTask() {
 
         Task task = createTask();
 
@@ -47,7 +45,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void createTask_setNewId_existIdInObject() throws IOException {
+    public void createTask_setNewId_existIdInObject() {
         Task task = createTask();
         manager.createTask(task);
 
@@ -70,7 +68,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void createEpic_setNewId_existIdInObject() throws IOException {
+    public void createEpic_setNewId_existIdInObject() {
         Epic epic = createEpic();
         manager.createEpic(epic);
 
@@ -93,7 +91,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void createSubtask_setNewId_existIdInObject() throws IOException {
+    public void createSubtask_setNewId_existIdInObject() {
         Epic epic = createEpic();
         manager.createEpic(epic);
         Subtask subtask = createSubtask(epic);
@@ -119,7 +117,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void updateTask_statusToInProgress_whenAdjustingTheTaskStatus()  {
+    public void updateTask_statusToInProgress_whenAdjustingTheTaskStatus() {
         Task task = createTask();
         manager.createTask(task);
         task.setStatus(Status.IN_PROGRESS);

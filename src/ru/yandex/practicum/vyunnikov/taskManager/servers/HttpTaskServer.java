@@ -89,31 +89,30 @@ public class HttpTaskServer {
 
     private void handleTask(HttpExchange exchange, String method, String body, String query) throws IOException {
         switch (method) {
-            case "GET" -> processingTheGetMethodForTasks(exchange, query);
-            case "POST" -> processingThePostMethodForTasks(exchange, query, body);
-            case "DELETE" -> processingTheDeleteMethodForTasks(exchange, query);
+            case "GET" -> getMethodForTasks(exchange, query);
+            case "POST" -> postMethodForTasks(exchange, query, body);
+            case "DELETE" -> deleteMethodForTasks(exchange, query);
             default -> writeResponse(exchange, "Обработка метода " + method + " не настроена", 400);
         }
     }
 
     private void handleSubtask(HttpExchange exchange, String method, String body, String query) throws IOException {
         switch (method) {
-            case "GET" -> processingTheGetMethodForSubtasks(exchange, query);
-            case "POST" -> processingThePostMethodForSubtask(exchange, query, body);
-            case "DELETE" -> processingTheDeleteMethodForSubtask(exchange, query);
+            case "GET" -> getMethodForSubtasks(exchange, query);
+            case "POST" -> postMethodForSubtask(exchange, query, body);
+            case "DELETE" -> deleteMethodForSubtask(exchange, query);
             default -> writeResponse(exchange, "Обработка метода " + method + " не настроена", 400);
         }
     }
 
     private void handleEpic(HttpExchange exchange, String method, String body, String query) throws IOException {
         switch (method) {
-            case "GET" -> processingTheGetMethodForEpic(exchange, query);
-            case "POST" -> processingThePostMethodForEpic(exchange, query, body);
-            case "DELETE" -> processingTheDeleteMethodForEpic(exchange, query);
+            case "GET" -> getMethodForEpic(exchange, query);
+            case "POST" -> postMethodForEpic(exchange, query, body);
+            case "DELETE" -> deleteMethodForEpic(exchange, query);
             default -> writeResponse(exchange, "Обработка метода " + method + " не настроена", 400);
         }
     }
-
 
     private void writeResponse(HttpExchange exchange, String responseString, int responseCode) throws IOException {
         if (responseString.isBlank()) {
@@ -128,11 +127,10 @@ public class HttpTaskServer {
         exchange.close();
     }
 
-    private void processingTheGetMethodForTasks(HttpExchange exchange, String query) throws IOException {
+    private void getMethodForTasks(HttpExchange exchange, String query) throws IOException {
         if (query != null) {
             try {
                 int id = Integer.parseInt(query.split("=")[1]);
-
                 if (taskManager.getTask(id) != null) {
                     Task task = taskManager.getTask(id);
                     String postSerialized = gson.toJson(task);
@@ -154,15 +152,11 @@ public class HttpTaskServer {
         }
     }
 
-    private void processingThePostMethodForTasks(HttpExchange exchange, String query, String body) throws IOException {
-        Task task;
-        int id;
-
+    private void postMethodForTasks(HttpExchange exchange, String query, String body) throws IOException {
         try {
-            id = Integer.parseInt(query.split("=")[1]);
-            task = gson.fromJson(body, Task.class);
-
+            Task task = gson.fromJson(body, Task.class);
             if (query != null) {
+                int id = Integer.parseInt(query.split("=")[1]);
                 if (taskManager.getTask(id) != null) {
                     task.setId(id);
                     taskManager.updateTask(task);
@@ -185,7 +179,7 @@ public class HttpTaskServer {
         }
     }
 
-    private void processingTheDeleteMethodForTasks(HttpExchange exchange, String query) throws IOException {
+    private void deleteMethodForTasks(HttpExchange exchange, String query) throws IOException {
         if (query != null) {
             int id;
 
@@ -210,7 +204,7 @@ public class HttpTaskServer {
         }
     }
 
-    private void processingTheDeleteMethodForSubtask(HttpExchange exchange, String query) throws IOException {
+    private void deleteMethodForSubtask(HttpExchange exchange, String query) throws IOException {
         if (query != null) {
             int id;
 
@@ -234,15 +228,11 @@ public class HttpTaskServer {
         }
     }
 
-    private void processingThePostMethodForSubtask(HttpExchange exchange, String query, String body) throws IOException {
-        Subtask subtask;
-        int id;
-
+    private void postMethodForSubtask(HttpExchange exchange, String query, String body) throws IOException {
         try {
-            subtask = gson.fromJson(body, Subtask.class);
-            id = Integer.parseInt(query.split("=")[1]);
-
+            Subtask subtask = gson.fromJson(body, Subtask.class);
             if (query != null) {
+                int id = Integer.parseInt(query.split("=")[1]);
                 if (taskManager.getSubtask(id) != null) {
                     subtask.setId(id);
                     taskManager.updateSubtask(subtask);
@@ -265,7 +255,7 @@ public class HttpTaskServer {
         }
     }
 
-    private void processingTheGetMethodForSubtasks(HttpExchange exchange, String query) throws IOException {
+    private void getMethodForSubtasks(HttpExchange exchange, String query) throws IOException {
         if (query != null) {
             try {
                 int id = Integer.parseInt(query.split("=")[1]);
@@ -292,7 +282,7 @@ public class HttpTaskServer {
         }
     }
 
-    private void processingTheDeleteMethodForEpic(HttpExchange exchange, String query) throws IOException {
+    private void deleteMethodForEpic(HttpExchange exchange, String query) throws IOException {
         if (query != null) {
             int id;
 
@@ -316,24 +306,28 @@ public class HttpTaskServer {
         }
     }
 
-    private void processingThePostMethodForEpic(HttpExchange exchange, String query, String body) throws IOException {
+    private void postMethodForEpic(HttpExchange exchange, String query, String body) throws IOException {
         Epic epic = null;
-        int id = 0;
+
 
         try {
             epic = gson.fromJson(body, Epic.class);
-            id = Integer.parseInt(query.split("=")[1]);
-
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            writeResponse(exchange, "передано не число", 400);
-            return;
         } catch (Exception e) {
             e.printStackTrace();
             writeResponse(exchange, badRequest, 400);
         }
 
         if (query != null) {
+            int id;
+
+            try {
+                id = Integer.parseInt(query.split("=")[1]);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                writeResponse(exchange, "передано не число", 400);
+                return;
+            }
+
             if (taskManager.getEpic(id) != null) {
                 epic.setId(id);
                 epic.setSubtaskIds(taskManager.getEpic(id).getSubtaskIds());
@@ -354,7 +348,7 @@ public class HttpTaskServer {
         }
     }
 
-    private void processingTheGetMethodForEpic(HttpExchange exchange, String query) throws IOException {
+    private void getMethodForEpic(HttpExchange exchange, String query) throws IOException {
         if (query != null) {
             try {
                 int id = Integer.parseInt(query.split("=")[1]);

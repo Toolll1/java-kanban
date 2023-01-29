@@ -72,9 +72,9 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
         Type subtasksType = new TypeToken<List<Subtask>>() {
         }.getType();
-        List<Subtask> allSubasks = gson.fromJson(client.load("subtasks"), subtasksType);
-        if (allSubasks != null) {
-            for (Subtask subtask : allSubasks) {
+        List<Subtask> allSubtasks = gson.fromJson(client.load("subtasks"), subtasksType);
+        if (allSubtasks != null) {
+            for (Subtask subtask : allSubtasks) {
                 subtasks.put(subtask.getId(), subtask);
                 addNewPrioritizedTask(subtask);
                 int epicIdOfSubtask = subtask.getEpicId();
