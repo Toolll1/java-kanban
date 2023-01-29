@@ -70,7 +70,7 @@ public class HttpTaskManagerTests extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Override
-    public void createTask_setNewId_existIdInObject() throws IOException{
+    public void createTask_setNewId_existIdInObject() throws IOException {
         Task task1 = uploadingATaskToTheServerAndDownloadingAfterRestarting(task);
 
         assertEquals(task.getTitle(), task1.getTitle(), "Названия задач не совпадают.");
@@ -82,7 +82,7 @@ public class HttpTaskManagerTests extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Override
-    public void createEpic_setNewId_existIdInObject() throws IOException{
+    public void createEpic_setNewId_existIdInObject() throws IOException {
         Epic epic1 = uploadingAEpicToTheServerAndDownloadingAfterRestarting(epic);
 
         assertEquals(epic.getTitle(), epic1.getTitle(), "Названия эпиков не совпадают.");
@@ -94,7 +94,7 @@ public class HttpTaskManagerTests extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Override
-    public void createSubtask_setNewId_existIdInObject() throws IOException{
+    public void createSubtask_setNewId_existIdInObject() throws IOException {
         Epic epic1 = uploadingAEpicToTheServerAndDownloadingAfterRestarting(epic);
         Subtask subtask1 = uploadingSubtaskToTheServerAndDownloadingAfterRestarting(subtask);
 

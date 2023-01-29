@@ -15,9 +15,9 @@ public interface TaskManager {
 
     List<Task> getHistory();
 
-    public void createTask(Task task) ;
+    public void createTask(Task task);
 
-    public void updateTask(Task task) ;
+    public void updateTask(Task task);
 
     public Task getTask(int taskId);
 
@@ -33,7 +33,7 @@ public interface TaskManager {
 
     public void createSubtask(Subtask subtask);
 
-    public void updateSubtask(Subtask subtask) ;
+    public void updateSubtask(Subtask subtask);
 
     Subtask getSubtask(int subtaskId);
 

@@ -37,7 +37,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void createTask(Task task)  {
+    public void createTask(Task task) {
         if (validateTaskPriority(task)) {
             task.setId(newId());
             addNewPrioritizedTask(task);

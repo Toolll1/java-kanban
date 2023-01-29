@@ -18,10 +18,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     private String pathToFile = "";
 
     public FileBackedTasksManager(File file) {
-      if (file != null) {
-          pathToFile = file.toString();
-          loadFromFile(file);
-      }
+        if (file != null) {
+            pathToFile = file.toString();
+            loadFromFile(file);
+        }
     }
 
     public void save() {
@@ -136,7 +136,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void updateTask(Task task){
+    public void updateTask(Task task) {
         super.updateTask(task);
         save();
     }
@@ -186,7 +186,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             save();
         }
     }
-
 
     @Override
     public void updateSubtask(Subtask subtask) {

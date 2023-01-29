@@ -26,8 +26,8 @@ import java.time.LocalDateTime;
 public class HttpTaskServer {
     private static final int PORT = 8080;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    private static final String badRequest = "Сервер не понимает запрос или пытается его обработать, " +
-            "но не может выполнить из-за того, что какой-то его аспект неверен.";
+    private static final String badRequest = "Сервер не понимает запрос или пытается его обработать, "
+            + "но не может выполнить из-за того, что какой-то его аспект неверен.";
     private static TaskManager taskManager;
     HttpServer httpServer;
     private static final Gson gson = new GsonBuilder()
@@ -82,8 +82,7 @@ public class HttpTaskServer {
             String response = gson.toJson(taskManager.getHistory());
             writeResponse(exchange, response, 200);
         } else {
-            writeResponse(exchange, "Обработка метода "
-                    + method + " не настроена", 400);
+            writeResponse(exchange, "Обработка метода " + method + " не настроена", 400);
         }
     }
 
@@ -93,8 +92,7 @@ public class HttpTaskServer {
             case "GET" -> processingTheGetMethodForTasks(exchange, query);
             case "POST" -> processingThePostMethodForTasks(exchange, query, body);
             case "DELETE" -> processingTheDeleteMethodForTasks(exchange, query);
-            default -> writeResponse(exchange, "Обработка метода "
-                    + method + " не настроена", 400);
+            default -> writeResponse(exchange, "Обработка метода " + method + " не настроена", 400);
         }
     }
 
@@ -103,8 +101,7 @@ public class HttpTaskServer {
             case "GET" -> processingTheGetMethodForSubtasks(exchange, query);
             case "POST" -> processingThePostMethodForSubtask(exchange, query, body);
             case "DELETE" -> processingTheDeleteMethodForSubtask(exchange, query);
-            default -> writeResponse(exchange, "Обработка метода "
-                    + method + " не настроена", 400);
+            default -> writeResponse(exchange, "Обработка метода " + method + " не настроена", 400);
         }
     }
 
@@ -113,8 +110,7 @@ public class HttpTaskServer {
             case "GET" -> processingTheGetMethodForEpic(exchange, query);
             case "POST" -> processingThePostMethodForEpic(exchange, query, body);
             case "DELETE" -> processingTheDeleteMethodForEpic(exchange, query);
-            default -> writeResponse(exchange, "Обработка метода "
-                    + method + " не настроена", 400);
+            default -> writeResponse(exchange, "Обработка метода " + method + " не настроена", 400);
         }
     }
 
@@ -159,46 +155,33 @@ public class HttpTaskServer {
     }
 
     private void processingThePostMethodForTasks(HttpExchange exchange, String query, String body) throws IOException {
-        Task task = null;
+        Task task;
+        int id;
 
         try {
+            id = Integer.parseInt(query.split("=")[1]);
             task = gson.fromJson(body, Task.class);
+
+            if (query != null) {
+                if (taskManager.getTask(id) != null) {
+                    task.setId(id);
+                    taskManager.updateTask(task);
+                    writeResponse(exchange, "задача успешно изменена.", 200);
+                } else {
+                    writeResponse(exchange, "нет такой задачи", 404);
+                }
+            } else {
+                taskManager.createTask(task);
+            }
+        } catch (ValidateException e) {
+            writeResponse(exchange, "Произошла ошибка добавления/изменения задачи, "
+                    + "ввиду пересечения по времени с другой задачей", 400);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            writeResponse(exchange, "передано не число", 400);
         } catch (Exception e) {
             e.printStackTrace();
             writeResponse(exchange, badRequest, 400);
-        }
-
-        if (query != null) {
-            int id;
-
-            try {
-                id = Integer.parseInt(query.split("=")[1]);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                writeResponse(exchange, "передано не число", 400);
-                return;
-            }
-
-            if (taskManager.getTask(id) != null) {
-                task.setId(id);
-                try {
-                    taskManager.updateTask(task);
-                    writeResponse(exchange, "задача успешно изменена.", 200);
-                } catch (ValidateException e) {
-                    writeResponse(exchange, "задача не изменена, ввиду пересечения по времени " +
-                            "с другой задачей", 400);
-                }
-            } else {
-                writeResponse(exchange, "нет такой задачи", 400);
-            }
-        } else {
-            try {
-                taskManager.createTask(task);
-                writeResponse(exchange, "задача была успешно добавлена.", 200);
-            } catch (ValidateException e) {
-                writeResponse(exchange, "задача не добавлена, ввиду пересечения по времени " +
-                        "с другой задачей", 400);
-            }
         }
     }
 
@@ -213,11 +196,12 @@ public class HttpTaskServer {
                 writeResponse(exchange, "передано не число", 400);
                 return;
             }
-            if (taskManager.getAllTask().contains(taskManager.getTask(id))) {
+
+            if (taskManager.getTask(id) != null) {
                 taskManager.deleteTask(id);
                 writeResponse(exchange, "задача успешно удалена.", 200);
             } else {
-                writeResponse(exchange, "нет такой задачи", 400);
+                writeResponse(exchange, "нет такой задачи", 404);
             }
 
         } else {
@@ -241,7 +225,7 @@ public class HttpTaskServer {
                 taskManager.deleteSubtask(id);
                 writeResponse(exchange, "подзадача успешно удалена.", 200);
             } else {
-                writeResponse(exchange, "нет такой подзадачи", 400);
+                writeResponse(exchange, "нет такой подзадачи", 404);
             }
 
         } else {
@@ -251,84 +235,56 @@ public class HttpTaskServer {
     }
 
     private void processingThePostMethodForSubtask(HttpExchange exchange, String query, String body) throws IOException {
-        Subtask subtask = null;
+        Subtask subtask;
+        int id;
 
         try {
             subtask = gson.fromJson(body, Subtask.class);
+            id = Integer.parseInt(query.split("=")[1]);
+
+            if (query != null) {
+                if (taskManager.getSubtask(id) != null) {
+                    subtask.setId(id);
+                    taskManager.updateSubtask(subtask);
+                    writeResponse(exchange, "подзадача успешно изменена.", 200);
+                } else {
+                    writeResponse(exchange, "нет такой подзадачи", 404);
+                }
+            } else {
+                taskManager.createSubtask(subtask);
+            }
+        } catch (ValidateException e) {
+            writeResponse(exchange, "Произошла ошибка добавления/изменения позадачи, "
+                    + "ввиду пересечения по времени с другой задачей", 400);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            writeResponse(exchange, "передано не число", 400);
         } catch (Exception e) {
             e.printStackTrace();
             writeResponse(exchange, badRequest, 400);
-        }
-
-        if (query != null) {
-            int id;
-
-            try {
-                id = Integer.parseInt(query.split("=")[1]);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                writeResponse(exchange, "передано не число", 400);
-                return;
-            }
-
-            if (subtask.getId() != null && subtask.getId() != id) {
-                writeResponse(exchange, "в запросе и в теле переданы разные id", 400);
-                return;
-            }
-
-            if (taskManager.getSubtask(id) != null) {
-                subtask.setId(id);
-
-                try {
-                    taskManager.updateSubtask(subtask);
-                    writeResponse(exchange, "подзадача успешно изменена.", 200);
-                } catch (ValidateException e) {
-                    writeResponse(exchange, "подзадача не изменена, ввиду пересечения по времени " +
-                            "с другой задачей", 400);
-                }
-
-            } else {
-                writeResponse(exchange, "нет такой подзадачи", 400);
-            }
-        } else {
-
-            try {
-                taskManager.createSubtask(subtask);
-                writeResponse(exchange, "подзадача была добавлена, если не пересеклась с другой.", 200);
-            } catch (ValidateException e) {
-                writeResponse(exchange, "подзадача не добавлена, ввиду пересечения по времени " +
-                        "с другой задачей", 400);
-            }
-
         }
     }
 
     private void processingTheGetMethodForSubtasks(HttpExchange exchange, String query) throws IOException {
         if (query != null) {
-            int id;
-
             try {
-                id = Integer.parseInt(query.split("=")[1]);
+                int id = Integer.parseInt(query.split("=")[1]);
+
+                if (taskManager.getSubtask(id) != null) {
+                    Subtask subtask = taskManager.getSubtask(id);
+                    String postSerialized = gson.toJson(subtask);
+
+                    writeResponse(exchange, postSerialized, 200);
+                } else {
+                    writeResponse(exchange, "подзадачи с таким id не существует", 400);
+                }
+
             } catch (NumberFormatException e) {
                 e.printStackTrace();
                 writeResponse(exchange, "передано не число", 400);
-                return;
-            }
-
-            if (taskManager.getSubtask(id) != null) {
-                Subtask subtask = taskManager.getSubtask(id);
-                String postSerialized = "";
-
-                try {
-                    postSerialized = gson.toJson(subtask);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    writeResponse(exchange, badRequest, 400);
-                }
-
-                writeResponse(exchange, postSerialized, 200);
-            } else {
-                writeResponse(exchange, "подзадачи с таким id не существует", 400);
+            } catch (Exception e) {
+                e.printStackTrace();
+                writeResponse(exchange, badRequest, 400);
             }
         } else {
             String response = gson.toJson(taskManager.getAllSubtask());
@@ -351,7 +307,7 @@ public class HttpTaskServer {
                 taskManager.deleteEpic(id);
                 writeResponse(exchange, "эпик успешно удален.", 200);
             } else {
-                writeResponse(exchange, "нет такого эпика", 400);
+                writeResponse(exchange, "нет такого эпика", 404);
             }
 
         } else {
@@ -362,44 +318,35 @@ public class HttpTaskServer {
 
     private void processingThePostMethodForEpic(HttpExchange exchange, String query, String body) throws IOException {
         Epic epic = null;
+        int id = 0;
 
         try {
             epic = gson.fromJson(body, Epic.class);
+            id = Integer.parseInt(query.split("=")[1]);
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            writeResponse(exchange, "передано не число", 400);
+            return;
         } catch (Exception e) {
             e.printStackTrace();
             writeResponse(exchange, badRequest, 400);
         }
 
         if (query != null) {
-            int id;
-
-            try {
-                id = Integer.parseInt(query.split("=")[1]);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                writeResponse(exchange, "передано не число", 400);
-                return;
-            }
-
-            if (epic.getId() != null && epic.getId() != id) {
-                writeResponse(exchange, "в запросе и в теле переданы разные id", 400);
-                return;
-            }
-
             if (taskManager.getEpic(id) != null) {
                 epic.setId(id);
                 epic.setSubtaskIds(taskManager.getEpic(id).getSubtaskIds());
                 taskManager.updateEpic(epic);
                 writeResponse(exchange, "эпик успешно изменен.", 200);
             } else {
-                writeResponse(exchange, "нет такого эпика", 400);
+                writeResponse(exchange, "нет такого эпика", 404);
             }
         } else {
             if (epic.getId() != null) {
                 taskManager.createEpic(epic);
                 taskManager.getAllEpic().add(epic);
-                writeResponse(exchange, "эпик успешно добавлен. Id эпика изменен на "
-                        + epic.getId(), 200);
+                writeResponse(exchange, "эпик успешно добавлен. Id эпика изменен на " + epic.getId(), 200);
             } else {
                 taskManager.createEpic(epic);
                 writeResponse(exchange, "эпик успешно добавлен.", 200);
@@ -409,32 +356,24 @@ public class HttpTaskServer {
 
     private void processingTheGetMethodForEpic(HttpExchange exchange, String query) throws IOException {
         if (query != null) {
-            int id;
-
             try {
-                id = Integer.parseInt(query.split("=")[1]);
+                int id = Integer.parseInt(query.split("=")[1]);
+
+                if (taskManager.getEpic(id) != null) {
+                    Epic epic = taskManager.getEpic(id);
+                    String postSerialized = gson.toJson(epic);
+
+                    writeResponse(exchange, postSerialized, 200);
+                } else {
+                    writeResponse(exchange, "эпика с таким id не существует", 400);
+                }
             } catch (NumberFormatException e) {
                 e.printStackTrace();
                 writeResponse(exchange, "передано не число", 400);
-                return;
+            } catch (Exception e) {
+                e.printStackTrace();
+                writeResponse(exchange, badRequest, 400);
             }
-
-            if (taskManager.getEpic(id) != null) {
-                Epic epic = taskManager.getEpic(id);
-                String postSerialized = "";
-
-                try {
-                    postSerialized = gson.toJson(epic);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    writeResponse(exchange, badRequest, 400);
-                }
-
-                writeResponse(exchange, postSerialized, 200);
-            } else {
-                writeResponse(exchange, "эпика с таким id не существует", 400);
-            }
-
         } else {
             String response = gson.toJson(taskManager.getAllEpic());
             writeResponse(exchange, response, 200);
